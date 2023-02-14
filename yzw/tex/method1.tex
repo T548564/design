@@ -1,89 +1,63 @@
 % !TeX root = ../main.tex
 % -*- coding: utf-8 -*-
 
-\chapter{基于对抗生成网络特征提取的近边界数据研究}
-\label{chpt:method1}
+\chapter{基于对抗生成网络特征提取的近边界数据研究}\label{3}
 
 \section{近边界对抗性样本}
-\label{sec:method:tikz}
 
+在\ref{5}\ref{5.3}中，本文通过大量的实验证明了近边界数据在大多数模型窃取攻击中，其近边界特征在盗窃模型中被保留。因此，近边界数据可以作为推断深度神经网络模型所有权的依据使用。下面给出近边界数据的定义：
 
-The {\scshape pdf}\ package, where ``{\scshape pdf}'' is supposed to mean ``portable
-graphics format'' (or ``pretty, good, functional'' if you
-prefer\dots), is a package for creating graphics in an ``inline''
-manner. It defines a number of \TeX\ commands that draw
-graphics. For example, the code \verb|\tikz \draw (0pt,0pt) -- (20pt,6pt);|
-yields the line \tikz \draw (0pt,0pt) -- (20pt,6pt); and the code \verb|\tikz \fill[orange] (1ex,1ex) circle (1ex);| yields \tikz
-\fill[orange] (1ex,1ex) circle (1ex);.
-
-\begin{figure}[h]
-    \centering
-    \input{./figure/pgf}
-    \caption{\label{fig:exmaple1} 示例图1}
-\end{figure}
-
-In a sense, when you use {\scshape pdf}\ you ``program'' your graphics, just
-as you ``program'' your document when you use \TeX.  You get all
-the advantages of the ``\TeX-approach to typesetting'' for your
-graphics: quick creation of simple graphics, precise positioning, the
-use of macros, often superior typography. You also inherit all the
-disadvantages: steep learning curve, no \textsc{wysiwyg}, small
-changes require a long recompilation time, and the code does not
-really ``show'' how things will look like.
-
-
-
-
-
-\begin{figure}
-    \centering
-    \input{./figure/process}
-    \caption{\label{fig:exmaple2} 示例流程图2}
-\end{figure}
+\begin{myDef}
+	\label{def:1}
+	近边界数据。给定一个数据样本$x$，一个阈值$\theta$,如果数据样本$x$满足$\vert g_i(x) - g_j(x) \vert \leq \theta$，其中$i \neq j $并且$min(g_i(x), g_j(x)) \geq max_{k \neq i, j}g_k(x)$，$g_k(x)$代表数据样本$x$决策为类别$k$的概率，则数据样本$x$被称为近边界数据。
+\end{myDef}
 
 
 \section{CW生成近边界对抗性样本}
-\label{sec:method:code}
 
-python 代码可以直接使用\textbf{python}环境
+尽管近边界在模型的知识产权保护中表现出显著的效果，但是自然的近边界数据在样本空间中的占比很低，甚至可以忽略，因此如何得到一定规模的近边界数据样本仍然很困难。
 
-\begin{python}[caption={斐波那契Python}]
-def fibonacci(n):
-    # Fibonacci number
-    if n < 0:
-        return False
-    if n <= 1:
-        return n
-    return fibonacci(n-2) + fibonacci(n-1)
-\end{python}
+根据最近的一些研究\cite{cao2021ipguard}，对抗性样本通常被用于确定分类器的分类边界。具体而言，对抗性样本有两个分类：原始分类和目标分类。其中，原始分类是该样本不经过特殊处理的原始分类结果，目标分类是对原始样本添加微小噪声后的分类结果。如图\ref{原始样本与对抗性样本对比}所示，对抗性样本对分类边界的跨越体现在，在视觉上对抗性样本和原始样本几乎没有差别，但是分类结果却是目标分类。
 
-C/C++ 代码可以直接使用\textbf{cpp}环境
+\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\begin{minipage}[t]{0.5\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\center
+		\includegraphics[width=4.5cm,height=3cm]{对抗性样本原图}
+		\centerline{原始样本}
+	\end{minipage}
+	\begin{minipage}[t]{0.5\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\center
+		\includegraphics[width=4.5cm,height=3cm]{对抗性样本}
+		\centerline{对抗性样本}
+	\end{minipage}
+\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+\caption{原始样本与对抗性样本对比}
+\label{原始样本与对抗性样本对比}
+\end {figure}
 
-\begin{cpp}[caption={斐波那契C++}]
-unsigned long Fibonacci(int n)
-{
-    // Fibonacci start from 0
-    if (n <= 1) 
-    {
-        return n;
-    }
-    else 
-    {
-        return Fibonacci(n - 1) + Fibonacci(n - 2);
-    }
-}
-\end{cpp}
+本文认为该特征可以帮助从对抗性样本中获得较多的近边界数据。因此，本文测试了几种常用的生成对抗性样本的方法，以帮助我们构建近边界数据。
 
-其他代码,使用\textbf{lstlisting}指明 \textbf{language}即可，如matlab代码
+\noindent$\bm{Fast \ Gradient \ Sign \ Method(FGSM):}$FGSM \cite{goodfellow2014explaining}是最经典的构建对抗性样本的方法之一，它是一种基于梯度生成对抗性样本的方法，属于无目标攻击方式。只需要对原始样本添加微小的扰动$\eta$，如\ref{eq:3.1}，\ref{eq:3.2}所示，即可生成样本$x$的对抗性样本$\tilde{x}$。
 
-\begin{lstlisting}[caption={Matlab代码},language=Matlab]
-function a = factorial(n)
-% return n!
-    if n==0
-        a=1;
-    else
-        a=n * factorial(n-1);
-    end
-\end{lstlisting}
+\begin{equation}
+	\label{eq:3.1}
+	\eta = \epsilon \cdot sign(\bigtriangledown_xJ(\theta,x,y))
+\end{equation}
+
+\begin{equation}
+	\label{eq:3.2}
+	\tilde{x} = clip(x + \eta)
+\end{equation}
+
+\noindent 其中$sign$是符号函数，$x$表示原始样本，$y$表示$x$的真实类别，$\theta$表示模型权重参数，$J$表示分类器损失函数，$\bigtriangledown_x$表示对原始样本$x$求偏导，$clip$是将样本投射回可行数据域，$\epsilon$用来控制变化幅度。
+
+FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon$的选择，因此探索不同的$\epsilon$是使用该方法的重点。除此之外，我们还测试了许多FGSM 的进阶版本如IGSM和RFSGM, 它们引入了迭代加入噪声和弱扰动的方法。IGSM 迭代式地使样本跨越分类边界直至成功，RFGSM 则是增加了扰动的多样性，可以更精细地生成对抗性样本。在实际结果中我们发现FGSM 生成对抗性示例尽管速度非常快，但位于分类边界附近的数据比例却极低。IGSM 和RFGSM 效果要比FGSM 好，但仍认为不符合我们的期望。在大量的测试中，我们发现CW能够生成大量在分类边界附近的样本，具体的测试结果在\ref{5}\ref{5.2}。
+
+\noindent$\bm{Carlini \ and \ Wagner's \ methods(CW):}$CW \cite{carlini2017towards}方法同样是添加噪声到对抗性样本中，但其具有三种变体：$CW$-$L_0$，$CW$-$L_2$和$CW$-$L_{\infty}$，不同的变体使用不同的方法来衡量噪声的大小，其中$CW$-$L_2$在实验中效果最为突出，因此本文使用该方法作为生成对抗性样本的选择。具体而言，$CW$-$L_2$对于给定的初始样本迭代搜索一个小噪声使示例变为对抗性样本，这种思路使得生成的对抗性样本都集中在分类边界附近，但相应地，$CW$-$L_2$牺牲了效率。
 \section{近边界数据私有化}
+
+
 \section{本章小结}
+
