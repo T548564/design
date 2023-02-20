@@ -3,16 +3,55 @@
 
 \chapter{基于近边界数据的模型所有权推断方法分析}\label{5}
 
+我们在开源数据集CIFAR-10\cite{krizhevsky2009learning}，Heritage\cite{Heritage}，Intel\_image\cite{Intel_image}上面进行实验，并选择ResNet18作为评估的源模型，VGG11作为对照的无关模型。本文使用的模型均在开源的预训练模型上进行训练。
 
+\noindent\textbf{被盗模型：}我们设置了常见的几种模型盗窃方法，包括模型微调，模型剪枝（不同的剪枝率）和模型蒸馏，并在源模型的基础上得到被盗模型。
 
 \section{实验设置}\label{5.1}
+
+本文实验利用CIFAR-10,Heritage和Intel\_image三种数据集训练ResNet18,训练过程中Adam优化器并将学习率(Learning rate)，迭代轮次(Epoch)和每批次大小(Batch size)分别设置为0.0001,200和64。蒸馏模型实验选择从Resnet18蒸馏至VGG11，蒸馏时将蒸馏温度设置为20并且教师模型比例$\alpha$=0.7，训练轮次是20。初始近边界数据生成采用$CW$-$L_2$算法，实验中选择有目标的生成方式，且学习率，迭代次数和二分搜索次数分别设置为0.001,1000和6，其他参数为默认值。私有近边界数据生成器采用DCGAN的基础结构，训练过程使用Adam优化器且将学习率，训练轮次和每批次大小分别设置为0.0002，8000和64。注意本发明最后微调源模型阶段需要交替使用源模型损失函数和微调目标边界的损失函数来微调源模型，具体设置为10个轮次交替一次且交替次数最多为10次。
+
 
 
 \section{生成初始近边界数据的算法选择}\label{5.2}
 
+本小节将对\ref{3}\ref{3.2}中提出的FGSM，IGSM，RFGSM和CW-$L_2$进行测试，我们均使用原作者发布的实现。FGSM，IGSM，RFGSM中均有一个用于界定噪声$\epsilon$的参数，且IGSM和RFGSM还包含一个重要的参数$\alpha$ 用来表示迭代次数。我们进行大量的实验探索选择合适的参数用于与CW-$L_2$进行比较。此外，CW-$L_2$的实验设置如\ref{5.1}所示。如\ref{table:1}所示，CW-$L_2$生成的对抗性样例与目标分类边界的平均距离远比其他算法小。因此，本文使用该算法作为初始近边界数据生成算法。
+
+\begin{table}[H]
+	\centering
+	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.5}
+	\caption{不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
+	\label{table:1}
+	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c c c c}
+		
+		\hline
+		数据集                    &   FGSM   &   IGSM   &  RFGSM  &   CW-$L_2$    \\
+		\hline
+\multirow{3}{6em}{CIFAR-10}      &    0.557  &   0.430  &  0.418   &    0.066     \\
+		                         &    \textbf{0.461  &   0.419  &  0.373   &    0.103     \\
+		                         &    0.586  &   0.369  &  0.356   &    0.112     \\
+		\hline
+\multirow{3}{6em}{Heritage}      &    0.347  &   0.356  &  0.314   &    0.014     \\
+		                         &    0.277  &   0.340  &  0.281   &    0.016     \\
+		                         &    0.348  &   0.332  &  0.276   &    0.010     \\
+		\hline
+\multirow{3}{6em}{Intel\_image}  &    0.522  &   0.447  &  0.353   &    0.088     \\
+		                         &    0.475  &   0.506  &  0.387   &    0.122     \\
+		                         &    0.468  &   0.402  &  0.428   &    0.127     \\
+		\hline		
+	\end{tabular*}
+\end{table}
+
+
 \section{数据近边界特性的评估与扩展}\label{5.3}
 
+
+
+
 \section{推断模型所有权}\label{5.4}
+
+
 
 \section{微调目标分类边界的影响}\label{5.5}
 
@@ -39,5 +78,8 @@
 
 
 \section{可伸缩性扩展}\label{5.6}
+
+
+
 
 \section{本章小结}
