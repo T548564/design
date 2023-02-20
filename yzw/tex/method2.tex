@@ -85,21 +85,58 @@
 
 \begin{figure}[htbp]%%图,[htbp]是浮动格式
 	\centering
-	\includegraphics[width=15cm,height=7cm]{方法流程图}
+	\includegraphics[width=15cm,height=7cm]{方法流程图.png}
 	%	\centerline{原始样本}
 	\setlength{\abovecaptionskip}{5mm} %图片标题与图片距离
 	\caption{方法整体流程图}
 	\label{方法流程图}
 \end {figure}
-	
 
-
-
-
-
-
+\begin{algorithm}[H]
+	\caption{InitialDistribution}
+	\label{alg:1}
+	\begin{algorithmic}[1]
+		
+		\Require $Nodes,kFrags,Set$
+		\Ensure $targetnodes$
+		\State $Nodes \gets$ the neighboring online nodes
+		\State $kFrags \gets$ the N re-encryption keys the node has generated
+		\State $Set \gets$ the set of the nodes that have got the kFrag
+		\State $flag \gets$ 0
+		\For {$kFrag$ in $kFrags$}
+		\State
+		\Call{SelectNode}{$Nodes,kFrag,Set,underload$}
+		\If{$flag==0$}
+		\State \Call{SelectNode}{$Nodes,kFrag,Set,normal$}
+		\EndIf
+		\If{$flag==0$}
+		\State \Call{SelectNode}{$Nodes,kFrag,Set,overload$}
+		\EndIf
+		\EndFor
+		
+		
+		\State    
+		\Function{SelectNode}{$Nodes,kFrag,Set,State$}
+		\For{$node$ in $Nodes$}
+		\If {$node's$ $state$ is $State$ and $node$ $\notin$ $Set$}
+		\State $Send(kFrag)$
+		\State $Set=Set \cup node$
+		\If{$Size(Set)==Size(Map)$}
+		\State $Clear(Set)$
+		\EndIf
+		\State $flag \gets 1$
+		\State $Break$
+		
+		
+		\EndIf
+		\EndFor
+		\EndFunction
+		
+		
+	\end{algorithmic}
+\end{algorithm}
 
 \section{本章小结}
 
-
+本章从所有权验证的局限性出发，引出了数据集推断，然后详细介绍了近边界数据推断模型所有权的设计目标以及具体的方法流程。
 
