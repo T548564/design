@@ -5,12 +5,12 @@ plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 添加这条可以让图形显示中文
 # plt.figure(figsize=(6, 4), dpi=300)
 x = [64, 128, 256, 512, 1024]
-y1 = [-4, -5, -6, -6, -8]
-y2 = [-3, -4, -5, -5, -6]
-y3 = [-4, -4, -5, -7, -8]
-y4 = [-4, -5, -6, -6, -8]
-y5 = [-2, -3, -5, -6, -7]
-y6 = [-2, -4, -4, -4, -6]
+y1 = [-4, -6, -7, -7, -8]
+y2 = [-3, -4, -4, -5, -6]
+y3 = [-3, -3, -5, -5, -6]
+y4 = [-3, -4, -6, -6, -7]
+y5 = [-4, -4, -6, -7, -7]
+y6 = [-2, -3, -3, -4, -5]
 
 plt.rcParams['xtick.direction'] = 'in'  # 将x周的刻度线方向设置向内
 plt.rcParams['ytick.direction'] = 'in'  # 将y轴的刻度方向设置向内`
@@ -32,5 +32,5 @@ plt.plot(x, y6, 'x-', color='tan', alpha=1, linewidth=1, label='知识蒸馏')
 plt.legend(loc="upper right")
 plt.xlabel('近边界数据数量')
 plt.ylabel('log(p值)')
-plt.savefig('../yzw/image/CIFAR-10-4-7-p-value.png', dpi=300)
+plt.savefig('../yzw/image/CIFAR-10-5-6-p-value.png', dpi=300)
 plt.show()

@@ -6,21 +6,20 @@ plt.rcParams['axes.unicode_minus'] = False
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 添加这条可以让图形显示中文
 # plt.figure(figsize=(10, 10), dpi=300)
 
-df1 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_64_source.csv')
-df2 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_64_fineTune.csv')
-df3 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_64_prune_0.1.csv')
-df4 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_64_prune_0.3.csv')
-df5 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_64_prune_0.5.csv')
+df1 = pd.read_csv('./csv/Intel_images/5_0/Intel_images_5_0_64_source.csv')
+df2 = pd.read_csv('./csv/Intel_images/5_0/Intel_images_5_0_64_fineTune.csv')
+df3 = pd.read_csv('./csv/Intel_images/5_0/Intel_images_5_0_64_prune_0.1.csv')
+df4 = pd.read_csv('./csv/Intel_images/5_0/Intel_images_5_0_64_prune_0.3.csv')
+df5 = pd.read_csv('./csv/Intel_images/5_0/Intel_images_5_0_64_prune_0.5.csv')
 
 
-df6 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_64_distillation.csv')  # distillaion
-df7 = pd.read_csv('./csv/cifar10/4_2/cifar10_4_2_512_distillation.csv')  # irrelevant
-
-y1 = list(df1['distance(3->0)'])
-y2 = list(df2['distance(3->0)'])
-y3 = list(df3['distance(3->0)'])
-y4 = list(df4['distance(3->0)'])
-y5 = list(df5['distance(3->0)'])
+df6 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_256_distillation.csv')  # distillation
+df7 = pd.read_csv('./csv/cifar10/4_2/cifar10_4_2_256_distillation.csv')  # irrelevant
+y1 = list(df1['distance(5->0)'])
+y2 = list(df2['distance(5->0)'])
+y3 = list(df3['distance(5->0)'])
+y4 = list(df4['distance(5->0)'])
+y5 = list(df5['distance(5->0)'])
 y6 = list(df6['distance(3->0)'])
 y7 = list(df7['distance(4->2)'])
 # print(max(y))
@@ -30,15 +29,15 @@ y2 = y2[:: 3]
 y3 = y3[:: 3]
 y4 = y4[:: 3]
 y5 = y5[:: 3]
-y6 = y6[:: 3]
-y7 = y7[0: 64: 3]
+y6 = y6[192: 256: 3]
+y7 = y7[192: 256: 3]
 plt.rcParams['xtick.direction'] = 'in'  # 将x周的刻度线方向设置向内
 plt.rcParams['ytick.direction'] = 'in'  # 将y轴的刻度方向设置向内`
 plt.xlim(-2, 67)
 plt.ylim(-0.05, 1)
-x_major_locator = MultipleLocator(10)  # 以每15显示
-y_major_locator = MultipleLocator(0.2)  # 以每3显示
-ax = plt.gca()
+x_major_locator=MultipleLocator(10)#以每15显示
+y_major_locator=MultipleLocator(0.2)#以每3显示
+ax=plt.gca()
 ax.xaxis.set_major_locator(x_major_locator)
 ax.yaxis.set_major_locator(y_major_locator)
 plt.plot(x, y1, 's-', color='#1A237E', alpha=1, linewidth=1, label='源模型')
@@ -52,5 +51,5 @@ plt.plot(x, y7, 'x-', color='#9575CD', alpha=1, linewidth=1, label='无关模型
 plt.legend(loc="upper left")
 plt.xlabel('近边界数据数量')
 plt.ylabel('距离分类边界距离')
-plt.savefig('../yzw/image/Heritage-3-0-distance.png', dpi=300)
+plt.savefig('../yzw/image/Intel_image-5-0-distance.png', dpi = 300)
 plt.show()

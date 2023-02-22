@@ -7,10 +7,11 @@ plt.rcParams['font.sans-serif'] = ['SimHei']  # 添加这条可以让图形显�
 # plt.figure(figsize=(10, 10), dpi=300)
 
 df1 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_source.csv')
-df2 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_prune_0.1.csv')
-df3 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_prune_0.3.csv')
-df4 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_prune_0.5.csv')
-df5 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_fineTune.csv')
+df2 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_fineTune.csv')
+df3 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_prune_0.1.csv')
+df4 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_prune_0.3.csv')
+df5 = pd.read_csv('./csv/cifar10/4_7/cifar10_4_7_64_prune_0.5.csv')
+
 
 df6 = pd.read_csv('./csv/heritage/3_0/Heritage_3_0_512_distillation.csv')  # distillation
 df7 = pd.read_csv('./csv/cifar10/4_2/cifar10_4_2_512_distillation.csv')  # irrelevant
@@ -40,15 +41,15 @@ ax=plt.gca()
 ax.xaxis.set_major_locator(x_major_locator)
 ax.yaxis.set_major_locator(y_major_locator)
 plt.plot(x, y1, 's-', color='#1A237E', alpha=1, linewidth=1, label='源模型')
-plt.plot(x, y2, 'o-', color='#E53935', alpha=1, linewidth=1, label='剪枝10%')
-plt.plot(x, y3, '^-', color='#43A047', alpha=1, linewidth=1, label='剪枝30%')
-plt.plot(x, y4, 'v-', color='#FFC107', alpha=1, linewidth=1, label='剪枝50%')
-plt.plot(x, y5, '+-', color='#FF5722', alpha=1, linewidth=1, label='微调')
+plt.plot(x, y2, '+-', color='#FF5722', alpha=1, linewidth=1, label='微调')
+plt.plot(x, y3, 'o-', color='#E53935', alpha=1, linewidth=1, label='剪枝10%')
+plt.plot(x, y4, '^-', color='#43A047', alpha=1, linewidth=1, label='剪枝30%')
+plt.plot(x, y5, 'v-', color='#FFC107', alpha=1, linewidth=1, label='剪枝50%')
 plt.plot(x, y6, '*-', color='#424242', alpha=1, linewidth=1, label='知识蒸馏')
 plt.plot(x, y7, 'x-', color='#9575CD', alpha=1, linewidth=1, label='无关模型')
 # 显示标签，如果不加这句，即使在plot中加了label='一些数字'的参数，最终还是不会显示标签
 plt.legend(loc="upper left")
 plt.xlabel('近边界数据数量')
 plt.ylabel('距离分类边界距离')
-plt.savefig('./pic/CIFAR-10-4-7-distance.png', dpi = 300)
+plt.savefig('../yzw/image/CIFAR-10-4-7-distance.png', dpi = 300)
 plt.show()
