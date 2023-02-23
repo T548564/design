@@ -44,40 +44,101 @@
 \end{table}
 
 
-\section{数据近边界特性的评估与扩展}\label{5.3}
+\section{数据近边界特性的评估}\label{5.3}
 
 \begin{figure}[htbp]%%图,[htbp]是浮动格式
 	\centering
 	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
 		\hspace{2mm}
 		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-2-distance}
-		\centerline{分类边界1}
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-2-distance.png}
+		\centerline{(a)分类边界1}
 	\end{minipage}
 	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
 		\hspace{2mm}
 		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-3-distance}
-		\centerline{分类边界2}
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-3-distance.png}
+		\centerline{(b)分类边界2}
 	\end{minipage}
 	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
 		\hspace{2mm}
 		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-7-distance}
-		\centerline{分类边界3}
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-7-distance.png}
+		\centerline{(c)分类边界3}
 	\end{minipage}
 	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
 		\hspace{2mm}
 		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-5-6-distance}
-		\centerline{分类边界4}
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-5-6-distance.png}
+		\centerline{(d)分类边界4}
 	\end{minipage}
 \setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-\caption{原始样本与对抗性样本对比}
-\label{原始样本与对抗性样本对比1}
+\caption{CIFAR-10上不同分类边界下的近边界数据表现}
+\label{CIFAR-10上不同分类边界下的近边界数据表现}
 \end {figure}
 
+\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\centering
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-distance.png}
+		\centerline{(a)分类边界1}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-distance.png}
+		\centerline{(b)分类边界2}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-distance.png}
+		\centerline{(c)分类边界3}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-distance.png}
+		\centerline{(d)分类边界4}
+	\end{minipage}
+\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+\caption{Heritage上不同分类边界下的近边界数据表现}
+\label{Heritage上不同分类边界下的近边界数据表现}
+\end {figure}
 
+\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\centering
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-distance.png}
+		\centerline{(a)分类边界1}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-distance.png}
+		\centerline{(b)分类边界2}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-distance.png}
+		\centerline{(c)分类边界3}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-distance.png}
+		\centerline{(d)分类边界4}
+	\end{minipage}
+\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+\caption{Intel\_image上不同分类边界下的近边界数据表现}
+\label{Intel-image上不同分类边界下的近边界数据表现}
+\end {figure}
+	
 \section{推断模型所有权}\label{5.4}
 
 \begin{table}[H]
@@ -244,7 +305,7 @@
 		&                            &  512 & 0.777     \\
 		
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界3} & 64   & 0.781  \\
+		&\multirow{4}{6em}{分类边界3} &  64  & 0.781  \\
 		&                            &  128 & 0.753     \\
 		&                            &  256 & 0.764     \\
 		&                            &  512 & 0.752     \\
@@ -264,7 +325,98 @@
 
 \section{可伸缩性扩展}\label{5.6}
 
-
+\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\centering
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-2-p-value.png}
+		\centerline{(a)分类边界1}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-3-p-value.png}
+		\centerline{(b)分类边界2}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-7-p-value.png}
+		\centerline{(c)分类边界3}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{CIFAR-10-5-6-p-value.png}
+		\centerline{(d)分类边界4}
+	\end{minipage}
+\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+\caption{CIFAR-10上推断模型所有权的扩展性}
+\label{CIFAR-10上推断模型所有权的扩展性}
+\end {figure}
+	
+\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\centering
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-p-value.png}
+		\centerline{(a)分类边界1}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-p-value.png}
+		\centerline{(b)分类边界2}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-p-value.png}
+		\centerline{(c)分类边界3}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-p-value.png}
+		\centerline{(d)分类边界4}
+	\end{minipage}
+\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+\caption{Heritage上推断模型所有权的扩展性}
+\label{Heritage上推断模型所有权的扩展性}
+\end {figure}
+		
+\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\centering
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-p-value.png}
+		\centerline{(a)分类边界1}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-p-value.png}
+		\centerline{(b)分类边界2}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-p-value.png}
+		\centerline{(c)分类边界3}
+	\end{minipage}
+	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+		\hspace{2mm}
+		\centering
+		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-p-value.png}
+		\centerline{(d)分类边界4}
+	\end{minipage}
+\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+\caption{Intel\_image上推断模型所有权的扩展性}
+\label{Intel-image上推断模型所有权的扩展性}
+\end {figure}
 
 
 \section{本章小结}
