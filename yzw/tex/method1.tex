@@ -84,7 +84,27 @@ FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon
 	Loss_{FT} = \frac{1}{n} \sum^{n}_{i = 1} (g_t(x_i') - g_s(x_i'))^2
 \end{equation}
 
-微调目标分类边界使近边界数据与源模型之间的联系更加紧密。注意，我们只微调目标分类边界，且通过交替微调尽可能减少微调对源模型的影响，微调前后源模型的精度差不超过5\%，具体的测试结果在\ref{5}\ref{5.5}中。
+微调目标分类边界使近边界数据与源模型之间的联系更加紧密。注意，我们只微调目标分类边界，且通过交替微调尽可能减少微调对源模型的影响，如表\ref{table:state}所示，微调前后源模型的精度差不超过5\%，因此，微调对于源模型的性能影响十分微小，甚至可以被忽略，但却有效提高了最后的所有权推断效果。更多的准确度测试结果可以在\ref{5}\ref{5.5}中找到。
+
+\begin{table}[H]
+	\centering
+	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.8}
+	\caption{微调分类边界对模型的影响}
+	\label{table:state}
+	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c c}
+		
+		\hline
+		数据集        &    微调前准确率   &   微调后准确率            \\
+		\hline
+		CIFAR-10      &     0.886        &     0.873               \\
+		
+		Heritage      &     0.879        &     0.856               \\
+		
+		Intel\_image  &     0.794        &     0.786               \\
+		\hline		
+	\end{tabular*}
+\end{table}
 
 \section{本章小结}
 
