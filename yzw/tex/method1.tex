@@ -25,14 +25,14 @@
 	\begin{minipage}[t]{0.5\linewidth}        %图片占用一行宽度的50%
 		\hspace{2mm}
 		\centering
-		\includegraphics[width=4.5cm,height=3cm]{对抗性样本原图.jpg}
-		\centerline{原始样本}
+		\includegraphics[width=5cm,height=3.5cm]{对抗性样本原图.jpg}
+		\centerline{(a)原始样本}
 	\end{minipage}
 	\begin{minipage}[t]{0.5\linewidth}        %图片占用一行宽度的50%
 		\hspace{2mm}
 		\centering
-		\includegraphics[width=4.5cm,height=3cm]{对抗性样本.jpg}
-		\centerline{对抗性样本}
+		\includegraphics[width=5cm,height=3.5cm]{对抗性样本.jpg}
+		\centerline{(b)对抗性样本}
 	\end{minipage}
 \setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
 \caption{原始样本与对抗性样本对比}
@@ -41,7 +41,7 @@
 
 本文认为该特征可以帮助从对抗性样本中获得较多的近边界数据。因此，本文测试了几种常用的生成对抗性样本的方法，以帮助我们构建近边界数据。
 
-\noindent$\bm{Fast \ Gradient \ Sign \ Method(FGSM):}$FGSM \cite{goodfellow2014explaining}是最经典的构建对抗性样本的方法之一，它是一种基于梯度生成对抗性样本的方法，属于无目标攻击方式。只需要对原始样本添加微小的扰动$\eta$，如\ref{eq:3.1}，\ref{eq:3.2}所示，即可生成样本$x$的对抗性样本$\tilde{x}$。
+\noindent$\bm{Fast \ Gradient \ Sign \ Method(FGSM):}$FGSM \cite{goodfellow2014explaining}是最经典的构建对抗性样本的方法之一，它是一种基于梯度生成对抗性样本的方法，属于无目标攻击方式。只需要对原始样本添加微小的扰动$\eta$，如式\ref{eq:3.1}，\ref{eq:3.2}所示，即可生成样本$x$的对抗性样本$\tilde{x}$。
 
 \begin{equation}
 	\label{eq:3.1}
