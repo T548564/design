@@ -7,7 +7,7 @@
 
 \section{研究背景与意义}
 
-近年来，科技迅速发展，计算能力得到显著提升，我们正在进入人工智能(Artificial Intelligence, AI)\cite{winston1984artificial}的时代。随着互联网的的快速发展，产生了海量的数据，得益于深度神经网络(Deep neural network, DNN)\cite{sze2017efficient}强大的数据处理能力，DNN已经成为应用最广泛的人工智能方法之一。自DNN在计算机视觉\cite{he2016identity,cortes2015advances,simonyan2014very}，语音识别\cite{nassif2019speech}，自然语言处理\cite{collobert2011natural,wu2016google,xiong2016achieving}等方面上突破性应用以来，使用DNN的应用数量呈爆炸式增长。这些DNN应用被应用到从自动驾驶\cite{chen2015deepdriving}到癌症检测\cite{esteva2017dermatologist}到玩复杂的游戏\cite{silver2017mastering}等无数应用中。并且在许多这些领域中，DNN现在已经能够超越人类的准确性。
+近年来，科技迅速发展，计算资源日益丰富，计算能力得到显著提升，我们正在进入人工智能(Artificial Intelligence, AI)\cite{winston1984artificial}的时代。随着互联网的的快速发展，产生了海量的数据，得益于深度神经网络(Deep neural network, DNN)\cite{sze2017efficient}强大的数据处理能力，DNN已经成为应用最广泛的人工智能方法之一。自DNN在计算机视觉\cite{he2016identity,cortes2015advances,simonyan2014very}，语音识别\cite{nassif2019speech}，自然语言处理\cite{collobert2011natural,wu2016google,xiong2016achieving}等方面上突破性应用以来，使用DNN的应用数量呈爆炸式增长。这些DNN应用被应用到从自动驾驶\cite{chen2015deepdriving}到癌症检测\cite{esteva2017dermatologist}到玩复杂的游戏\cite{silver2017mastering}等无数应用中。并且在许多这些领域中，DNN已经能够超越人类的准确性。
 
 DNN在许多领域取得巨大成功，为人类社会生活带来极大便利的同时，也带来了非常严重的侵犯知识产权问题。训练一个大型的高性能的DNN模型都离不开该领域专家的专业知识、规模巨大的数据集以及大量的训练时间和强大的计算资源，具体体现在以下三个方面：
 \begin{enumerate}
@@ -18,7 +18,7 @@ DNN在许多领域取得巨大成功，为人类社会生活带来极大便利�
 \end{enumerate}
 所以高性能DNN模型是模型所有者智慧的结晶，同时需要高额的经济开销，模型所有者享有DNN模型的知识产权。
 
-模型所有者出于学术目的将DNN模型放到开源社区上。或者，使用机器学习即服务(Machine Learning as a Service, MLaaS)的商业模式，即MLaaS平台通过训练好的DNN模型来向用户提供应用程序接口(Application Programming Interface, API)，用户可以通过支付一定的费用来使用API。或者，训练好的DNN模型将成为像我们日常商品一样的消费品，它们由不同的公司或个人进行训练，由不同的供应商分发，最终由用户消费。如图\ref{DNN模型服务和盗窃示意图}所示，这样的方式极大的方便了科研工作者和一般的消费者，但是不法分子却可以以比模型所有者低很多的成本复制一个替代模型，用于自己盈利。
+模型所有者出于学术目的将DNN模型放到开源社区上。或者，使用机器学习即服务(Machine Learning as a Service, MLaaS)\cite{ribeiro2015mlaas}的商业模式，即MLaaS平台通过训练好的DNN模型来向用户提供应用程序接口(Application Programming Interface, API)\cite{ofoeda2019application}，用户可以通过支付一定的费用来使用API。或者，训练好的DNN模型将成为像我们日常商品一样的消费品，它们由不同的公司或个人进行训练，由不同的供应商分发，最终由用户消费。如图\ref{DNN模型服务和盗窃示意图}所示，这样的方式极大的方便了科研工作者和一般的消费者，但是不法分子却可以以比模型所有者低很多的成本复制一个替代模型，用于自己盈利。
 
 \begin{figure}[htbp]%%图,[htbp]是浮动格式
 	\centering
@@ -28,12 +28,16 @@ DNN在许多领域取得巨大成功，为人类社会生活带来极大便利�
 	\caption{DNN模型服务和盗窃示意图}
 	\label{DNN模型服务和盗窃示意图}
 	\end {figure}
+	
+所以如何在训练和部署时保护DNN模型所有者的知识产权是AI领域亟待解决的问题。
+
 
 \section{相关研究现状}
 
-研究问题
+作为一种数字产品，DNN模型不仅凝结了设计者的智慧，还需要消耗大量的训练数据和昂贵的计算资源。近年来，拥有先进的的模型带来的工业优势已经被人们广泛认可，这开始激发一些不法分子窃取这些模型的攻击\cite{tramer2016stealing,duddu2018stealing}。现在可以明确的是，DNN模型将在未来的IT发展中发挥核心作用，因此保护这些模型的必要性显得更加突出。1994年，Van Schyndel等人\cite{van1994digital}第一次提出数字水印的概念，将标记隐蔽的嵌入到如音频、视频等数字内容中，来识别其所有权，版权所有者通过显示此类标记的存在可以证明其对内容的所有权。DNN模型也是一种数字产品，所以，许多研究者从数字媒体水印得到启发，从而设计模型水印和模型指纹用于解决DNN模型的所有权问题。
 
-研究现状
+模型水印是解决DNN模型知识产权问题的主要方式之一，Uchida等人\cite{uchida2017embedding}在2017年首次提出了在DNN模型中嵌入水印的通用框架。该方法是一种白盒的模式，通过训练时使用正则化器，并且这种正则化在参数中引入了所需要的统计偏差来作为嵌入的水印。模型所有者清楚模型内部的细节，并且可以提取嵌入的水印，以此来作为模型所有权的依据\cite{nagai2018digital}。
+
 
 \section{本文主要工作}
 
