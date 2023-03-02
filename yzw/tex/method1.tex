@@ -68,12 +68,11 @@ FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon
 \begin{equation}
 	\label{eq:3.3}
 	\begin{split}
-		\mathop{min} \limits_{G} \mathop{max} \limits_{D} V(D, G) &= \mathop{min} \limits_{G} \mathop{max} \limits_{D} E_{x \sim P_{data(x)}}[logD(x)] \\
-		&+ E_{z \sim P_{z(z)}}[log(1 - D(G(z)))]
+		\mathop{min} \limits_{G} \mathop{max} \limits_{D} V(D, G) &= \mathop{min} \limits_{G} \mathop{max} \limits_{D} E_{x \sim P_{data}(x)}[logD(x)] \\
+		&+ E_{T \sim P_{T}(T)}[log(1 - D(G(T)))]
 	\end{split}
 \end{equation}
-
-\noindent 其中$x$表示真实数据样本，$z$表示用于生成样本的随机噪声，GAN对噪声$z$的分布没有特别要求，但是常用的有高斯分布，均匀分布。注意这里的优化过程是一个交替的过程。
+其中$x$表示真实数据样本，$T$表示用于生成样本的随机噪声，GAN对噪声$z$的分布没有特别要求，但是常用的有高斯分布，均匀分布。注意这里的优化过程是一个交替的过程。
 
 我们希望DCGAN能够学习到足够多的近边界数据特征，尝试修改其判定器的目标函数，在保留梯度的情况下将其与源模型的结果相连，得到的结果在同样的生成规模下确实优于原始DCGAN 的生成情况。然而，考虑到在两者的效率，实际情况下生成的结果并无较大区别。
 
