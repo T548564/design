@@ -167,10 +167,38 @@ Shafieinejad等人\cite{shafieinejad2021robustness}研究了DNN中基于后门�
 
 \noindent(1)\textbf{模型指纹生成}
 
+模型指纹与生物学上的指纹类似，具有唯一标识性，用以标记DNN模型的所有权。根据之前对指纹的相关研究\cite{zhao2020afa,lukas2019deep,cao2021ipguard}，可以把靠近决策边界的对抗性样本作为模型的指纹。具体来说，通过将此类样本输入DNN模型，将其对应的输出标签作为模型的指纹。
+
+对于一个正常样本$x$，添加一个微小的扰动$\delta$，使得第$i$个输出满足：
+\begin{equation}
+	\label{eq:4}
+	arg \mathop{max} \limits_i g_i(x) = y \wedge arg \mathop{max} \limits_i g_i(x + \delta) = y'
+\end{equation}
+其中$y$表示输入样本$x$对真实标签，叠加扰动后输出$y' \neq y$，$\delta$是对抗扰动，$x + \delta$即为对抗样本。
+
+所以一组对抗性样本作为指纹样本，对应的输出作为指纹标签，共同构成模型指纹。即$X' = \{x_1',x_2',...,x_n'\}$作为模型指纹样本，对应的预测结果$Y' = \{y_1', y_2',...,y_n'\}$为指纹标签。
+
 \noindent(2)\textbf{模型指纹验证}
+
+在模型指纹验证阶段，通常的做法是使用指纹样本查询可疑模型API，比较API返回的预测标签和指纹标签的匹配程度。设定一个阈值$\tau$，当阈值标签和指纹标签的匹配率超过阈值$\tau$时，视为匹配成功。
+
+设$X' = \{x_1',x_2',...,x_n'\}$为$n$个指纹样本，$Y' = \{y_1', y_2',...,y_n'\}$为对应的指纹标签，将$n$个指纹样本输入可疑模型API后，预测标签为$\widetilde{Y}' = \{\widetilde{y_1}', \widetilde{y_2}',...,\widetilde{y_n}'\}$。其中预测标签与指纹标签相同的数量为$q$，即$y_i' = \widetilde{y_i}'(i = 1, 2,...,q)$。
+
+定义验证函数如下：
+\begin{equation}
+	\label{eq:5}
+	Verify(Y', \widetilde{Y}')= \left
+	\{ 
+	\begin{array}{ll} 
+		1, &\quad \dfrac{q}{n} \geq \tau \\ 
+		\\
+		0, &\quad \mbox{其他}\\ 
+	\end{array} 
+	\right.
+\end{equation}
+式\ref{eq:5}中，$q/n$表示匹配成功率，$\tau$是阈值，结果为$1$代表判定可疑模型为盗版模型。
 
 
 \section{本章小结}
 
-
-小结
+本章主要介绍了深度神经网络，对抗性攻击，生成对抗网络，深度神经网络的模型窃取攻击和知识产权保护这五个方面的相关概念和理论基础。
