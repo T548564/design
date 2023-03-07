@@ -25,12 +25,15 @@
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
+%\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 \usepackage{setspace}
 \usepackage{multirow}
 \usepackage{longtable}
-\renewcommand{\algorithmicrequire}{\textbf{Input:}}
-\renewcommand{\algorithmicensure}{\textbf{Output:}}
-
+\usepackage{subfigure}
+\usepackage{float}
+\renewcommand{\algorithmicrequire}{\textbf{输入：}}
+\renewcommand{\algorithmicensure}{\textbf{输出：}}
+%\renewcommand{\algorithmcfname}{算法}
 % 参考文献
 \addbibresource{nkthesis.bib}
 % 图片文件夹
@@ -107,7 +110,7 @@
 \include{./tex/relatedwork}
 \include{./tex/method1}
 \include{./tex/method2}
-\include{./tex/discussion}
+%\include{./tex/discussion}
 \include{./tex/summary}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
