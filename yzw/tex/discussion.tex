@@ -3,19 +3,83 @@
 
 \chapter{基于近边界数据的模型所有权推断方法分析}\label{5}
 
-我们在开源数据集CIFAR-10\cite{krizhevsky2009learning}，Heritage\cite{Heritage}，Intel\_image\cite{Intel_image}上面进行实验，并选择ResNet18作为评估的源模型，VGG11作为对照的无关模型。本文使用的模型均在开源的预训练模型上进行训练。
+本文选择在开源数据集CIFAR-10\cite{krizhevsky2009learning}，Heritage\cite{Heritage}，Intel\_image\cite{Intel_image}上进行实验，并选择ResNet18作为评估的源模型，VGG11作为对照的无关模型。本章将从生成初始近边界数据的方法选择，数据近边界特性评估，微调目标分类边界的影响，推断模型所有权的有效性和不同规模近边界数据的可伸缩性扩展这几个方面对本文提出的方法进行测评和分析。
 
-\noindent\textbf{被盗模型：}我们设置了常见的几种模型盗窃方法，包括模型微调，模型剪枝（不同的剪枝率）和模型蒸馏，并在源模型的基础上得到被盗模型。
+\noindent\textbf{被盗模型：}本文设置了几种常见的模型盗窃方法，包括模型微调，模型剪枝（不同的剪枝率）和模型知识蒸馏，并在源模型的基础上派生得到被盗模型。
 
 \section{实验设置}\label{5.1}
 
-本文实验利用CIFAR-10,Heritage和Intel\_image三种数据集训练ResNet18,训练过程中Adam优化器并将学习率(Learning rate)，迭代轮次(Epoch)和每批次大小(Batch size)分别设置为0.0001,200和64。蒸馏模型实验选择从Resnet18蒸馏至VGG11，蒸馏时将蒸馏温度设置为20并且教师模型比例$\alpha$=0.7，训练轮次是20。初始近边界数据生成采用$CW$-$L_2$算法，实验中选择有目标的生成方式，且学习率，迭代次数和二分搜索次数分别设置为0.001,1000和6，其他参数为默认值。私有近边界数据生成器采用DCGAN的基础结构，训练过程使用Adam优化器且将学习率，训练轮次和每批次大小分别设置为0.0002，8000和64。注意本发明最后微调源模型阶段需要交替使用源模型损失函数和微调目标边界的损失函数来微调源模型，具体设置为10个轮次交替一次且交替次数最多为10次。
+\subsection{数据集}
+
+\noindent\textbf{CIFAR-10：}CIFAR-10共有10个类别，其中训练集包含50000张大小为32x32的图像，测试集包含10000张大小为32x32的图像。
+
+\noindent\textbf{Heritage：}Heritage共有10个类别，其中训练集包含10235张大小为128x128的图像，测试集包含1404张大小为64x64的图像。
+
+\noindent\textbf{Intel\_image：}Intel\_image共有6个类别，其中训练集包含14034张大小为150x150的图像，测试集包含3001张大小为150x150的图像。
+
+\subsection{目标模型}
+
+本文的目标模型选用ResNet18，在上述三个数据集上分别训练作为实验源模型，使用VGG11作为无关的对照模型。ResNet18和VGG11的参数信息如表\ref{table:10}所示。由于CIFAR-10的图片尺寸较小，所以训练的时候将原始ResNet18中首层使用的7x7卷积核改成3x3，步长和填充随之改为1，并且舍弃最大池化层，更改结构后ResNet18在CIFAR-10上的预测准确度得到了提升。
+
+\begin{table}[H]
+	\centering
+	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.8}
+	\caption{模型参数信息}
+	\label{table:10}
+	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c c c }
+		
+		\hline
+		模型      &   层数    &   计算量/亿     &    参数量/百万     \\
+		\hline
+
+        ResNet18  &   18     &    9.559     &    11.670     \\
+
+		VGG11     &   11     &    47.022    &    132.863     \\
+
+		\hline		
+	\end{tabular*}
+\end{table}
+
+\subsection{实验环境和参数设置}
+
+本文在实验中的使用的硬件与软件配置如表\ref{table:11}所示。
+
+\begin{table}[H]
+	\centering
+	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.6}
+	\caption{硬件与软件配置}
+	\label{table:11}
+	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c }
+		
+		\hline
+		硬件/软件      &   版本    \\
+		\hline
+		
+		操作系统  &   Ubuntu 20.04 LTS    \\
+		
+		CPU     &   Intel Core i7-11700KF @ 3.6GHz       \\
+		
+		显卡     &   NVIDIA GeForce RTX 3080 Ti \\
+		
+		CUDA版本     &   	11.6          \\
+		
+		机器学习框架     &   pytorch 1.9.0          \\
+		
+		Python     &   3.7.11           \\
+		
+		\hline		
+	\end{tabular*}
+\end{table}
+
+训练过程中Adam优化器并将学习率(Learning rate)，迭代轮次(Epoch)和每批次大小(Batch size)分别设置为0.0001,200和64。蒸馏模型实验选择从Resnet18蒸馏至VGG11，蒸馏时将蒸馏温度设置为20并且教师模型比例$\alpha$=0.7，训练轮次是20。初始近边界数据生成采用$CW$-$L_2$算法，实验中选择有目标的生成方式，且学习率，迭代次数和二分搜索次数分别设置为0.001,1000和6，其他参数为默认值。私有近边界数据生成器采用DCGAN的基础结构，训练过程使用Adam优化器且将学习率，训练轮次和每批次大小分别设置为0.0002，8000和64。本方法最后微调源模型阶段需要交替使用源模型损失函数和微调目标边界的损失函数来微调源模型，具体设置为10个轮次交替一次且交替次数最多为10次。
 
 
 
 \section{生成初始近边界数据的算法选择}\label{5.2}
 
-本小节将对\ref{3}\ref{3.2}中提出的FGSM，IGSM，RFGSM和CW-$L_2$进行测试，我们均使用原作者发布的实现。FGSM，IGSM，RFGSM中均有一个用于界定噪声$\epsilon$的参数，且IGSM和RFGSM还包含一个重要的参数$\alpha$ 用来表示迭代次数。我们进行大量的实验探索选择合适的参数用于与CW-$L_2$进行比较。此外，CW-$L_2$的实验设置如\ref{5.1}所示。如表\ref{table:1}所示，CW-$L_2$生成的对抗性样例与目标分类边界的平均距离远比其他算法小。因此，本文使用该算法作为初始近边界数据生成算法。
+本小节将对\ref{3}\ref{3.2}中提到的FGSM，IGSM，RFGSM和CW-$L_2$进行测试，除对CW-$L_2$进行了改进外，其余均使用原作者发布的实现。FGSM，IGSM，RFGSM中均有一个用于界定噪声$\epsilon$的参数。我们进行大量的实验探索选择合适的参数用于与CW-$L_2$进行比较。此外，CW-$L_2$的实验设置如\ref{5.1}所示。
 
 \begin{table}[H]
 	\centering
@@ -33,7 +97,7 @@
 		                         &    0.586  &   0.369  &  0.356   &    0.112     \\
 		\hline
 \multirow{3}{6em}{Heritage}      &    0.347  &   0.356  &  0.314   &    0.014     \\
-		                         &    0.277  &   0.340  &  0.281   &    0.016     \\
+		                         &    0.377  &   0.340  &  0.281   &    0.016     \\
 		                         &    0.348  &   0.332  &  0.276   &    0.010     \\
 		\hline
 \multirow{3}{6em}{Intel\_image}  &    0.522  &   0.447  &  0.353   &    0.088     \\
@@ -43,114 +107,129 @@
 	\end{tabular*}
 \end{table}
 
+FGSM，IGSM，RFGSM和CW-$L_2$到分类边界的距离如表\ref{table:1}所示。从表中可以看出FGSM的效果较差，这是因为FGSM生成对抗性样本只进行一次噪声的添加，效率非常高，在追求效率的情况下牺牲了性能，这是合理的。相比于FGSM，IGSM和RFGSM的效果稍好，这是在算法中引入迭代的效果，通过每次一小步的迭代，不断地在上一次的基础上添加噪声，使得图片以更小的幅度变化。这和表\ref{table:1}中大部分情况下，IGSM和RFGSM的生成的对抗性样本距离分类边界的平均距离比FGSM生成的近是相符的。改进过的CW-$L_2$是这几种方法中效果相当显著，距离分类边界的距离比其他三种方法小数十倍。这是因为本身这个算法机制比较复杂，在迭代的过程中引入了二分查找和神经网络来训练参数以更好的生成图片，我们进一步在算法中引入了到分类边界距离这个参数，使得生成图片朝着距离更小的方向改进，并且达到我们预定的阈值$\theta$时，提前终止算法，一定情况下缓解该算法效率低下的问题。
+
 
 \section{数据近边界特性的评估}\label{5.3}
 
-如图\ref{CIFAR-10上不同分类边界下的近边界数据表现}图\ref{Heritage上不同分类边界下的近边界数据表现}图\ref{Intel-image上不同分类边界下的近边界数据表现}所示, 本文提出的近边界数据在所有盗窃模型中都表现出了靠近分类边界的特性。例如，我们的方法在全部数据集中，近边界数据在无关模型上表现出和目标分类边界没有关系。然而，在基于源模型的各种盗窃模型上近边界数据表现良好，尤其是模型修改方法破坏性较强如模型蒸馏时依旧表现出靠近目标分类边界的特性。注意我们此处使用的近边界数据的大小为64，换句话说，我们的方法在较小规模的近边界数据上依旧效果显著，可以想到的是当数据量增大时，我们的方法效果会更加明显。
+本文提出的近边界数据不仅在源模型在表现出了近边界性，在所有盗窃模型中也表现出了这个特点，数据近边界特性的可转移性，是本文提出方法的重要基础。本节将在三个数据集和不同分类边界上对近边界数据的近边界性和可转移性进行测评。
 
-
-\begin{figure}[htbp]%%图,[htbp]是浮动格式
+\begin{figure*}[!htb]
 	\centering
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-2-distance.png}
-		\centerline{(a)分类边界1}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-3-distance.png}
-		\centerline{(b)分类边界2}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-7-distance.png}
-		\centerline{(c)分类边界3}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-5-6-distance.png}
-		\centerline{(d)分类边界4}
-	\end{minipage}
-\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-\caption{CIFAR-10上不同分类边界下的近边界数据表现}
-\label{CIFAR-10上不同分类边界下的近边界数据表现}
-\end {figure}
+	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-2-distance.png}} 
+	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-3-distance.png}} 
+	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-7-distance.png}} 
+	\caption{CIFAR-10上不同分类边界下的近边界数据表现}
+	\label{CIFAR-10上不同分类边界下的近边界数据表现}
+    \setlength{\abovecaptionskip}{7mm}
+\end{figure*}
 
-\begin{figure}[htbp]%%图,[htbp]是浮动格式
+\begin{figure*}[!htb]
 	\centering
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-distance.png}
-		\centerline{(a)分类边界1}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-distance.png}
-		\centerline{(b)分类边界2}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-distance.png}
-		\centerline{(c)分类边界3}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-distance.png}
-		\centerline{(d)分类边界4}
-	\end{minipage}
-\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-\caption{Heritage上不同分类边界下的近边界数据表现}
-\label{Heritage上不同分类边界下的近边界数据表现}
-\end {figure}
+	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Heritage-3-0-distance.png}} 
+	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Heritage-3-1-distance.png}} 
+	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Heritage-3-4-distance.png}} 
+	\caption{Heritage上不同分类边界下的近边界数据表现}
+	\label{Heritage上不同分类边界下的近边界数据表现}
+	\setlength{\abovecaptionskip}{7mm}
+\end{figure*}
 
-\begin{figure}[htbp]%%图,[htbp]是浮动格式
+\begin{figure*}[!htb]
 	\centering
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-distance.png}
-		\centerline{(a)分类边界1}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-distance.png}
-		\centerline{(b)分类边界2}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-distance.png}
-		\centerline{(c)分类边界3}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-distance.png}
-		\centerline{(d)分类边界4}
-	\end{minipage}
-\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-\caption{Intel\_image上不同分类边界下的近边界数据表现}
-\label{Intel-image上不同分类边界下的近边界数据表现}
-\end {figure}
+	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-1-distance.png}} 
+	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-4-distance.png}} 
+	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-5-distance.png}} 
+	\caption{Intel\_image上不同分类边界下的近边界数据表现}
+	\label{Intel-image上不同分类边界下的近边界数据表现}
+	\setlength{\abovecaptionskip}{7mm}
+\end{figure*}
+%\begin{figure}[htbp]%%图,[htbp]是浮动格式
+%	\centering
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-distance.png}
+%		\centerline{(a)分类边界1}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-distance.png}
+%		\centerline{(b)分类边界2}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-distance.png}
+%		\centerline{(c)分类边界3}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-distance.png}
+%		\centerline{(d)分类边界4}
+%	\end{minipage}
+%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+%\caption{Heritage上不同分类边界下的近边界数据表现}
+%\label{Heritage上不同分类边界下的近边界数据表现}
+%\end {figure}
+%
+%\begin{figure}[htbp]%%图,[htbp]是浮动格式
+%	\centering
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-distance.png}
+%		\centerline{(a)分类边界1}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-distance.png}
+%		\centerline{(b)分类边界2}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-distance.png}
+%		\centerline{(c)分类边界3}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-distance.png}
+%		\centerline{(d)分类边界4}
+%	\end{minipage}
+%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+%\caption{Intel\_image上不同分类边界下的近边界数据表现}
+%\label{Intel-image上不同分类边界下的近边界数据表现}
+%\end {figure}
 
+如图\ref{CIFAR-10上不同分类边界下的近边界数据表现}，图\ref{Heritage上不同分类边界下的近边界数据表现}，图\ref{Intel-image上不同分类边界下的近边界数据表现}所示, 本文提出的近边界数据在所有盗窃模型中都表现出了靠近分类边界的特性。从图中可以看出，相比于其他所有模型，近边界数据在源模型上距离分类边界的距离最近，这主要是三方面的原因：
+
+\begin{enumerate}
+	\renewcommand{\labelenumi}{\theenumi)}
+	\item 初始的近边界样本是在源模型的基础上生成的，并且从众多生成对抗性样本的方法中挑选了效果最好的CW-$L_2$方法，然后对该方法进行改进，使之生成距离分类边界更近的对抗性样本。
+	\item 使用DCGAN生成器私有化近边界数据后，设计了新的损失函数微调源模型，这使得私有近边界数据同样非常靠接模型分类边界。
+	\item 被盗模型在从源模型派生的过程中，涉及到模型的修改，这些修改操作虽然不会使近边界数据在这些模型上失去近边界性，但是会使它们稍微偏离模型分类边界。
+\end{enumerate}
+
+近边界数据在所有被盗模型中变现出近边界性说明近边界性是可以跟随源模型一起转移的，这跟DNN分类器有很大的关系。对抗性样本一般位于分类边界上，可以反应分类边界，并且这类特殊的样本具有可转移性，近边界数据是利用对抗性样本构造的，同样具有这种特性。这是本文提出方法的重要基础，因为我们就是要利用所有者的私有近边界数据和可疑队友提供的近边界数据到分类边界的距离来推断模型所有权（距离近者获得所有权），如果私有近边界数据不表现出近边界性，那么就会判定失败。
+
+从图中可以发现，相比于其他模型盗窃方法，近边界数据在知识蒸馏派生出的模型上距离分类边界距离稍远。这是因为知识蒸馏对模型的修改特别大，通常来说会更换模型的架构，然后在通过蒸馏的方法训练。模型知识蒸馏对于其他模型知识产权保护方法也是一种挑战，近边界数据在蒸馏产生的模型上仍然表现出近边界性，因此本文提出的方法对这种强修改的盗窃方法依然适用。
+
+图中还有一个点是近边界数据在无关模型上并不反映出近边界性，这是非常重要的。本文提出的方法不应该对正常的无关模型产生误判，混淆所有权的归属。
+
+在这一阶段，我们使用的近边界数据大小为64。也就是说，本文的方法在较小规模近边界数据时效果依然显著，那么在增大数据量时，效果会更加明显。在\ref{5.6}中，我们会对不同规模的近边界数据进行测试。
 
 \section{微调目标分类边界的影响}\label{5.4}
 
-本小节对\ref{3}\ref{3.3}中测试微调对源模型的影响进行了广泛的实验。我们针对不同数据集训练得到的源模型，使用不同规模的近边界数据以及不同的目标分类边界对源模型进行微调。如表\ref{table:3}表\ref{table:4}表\ref{table:5}所示，几乎全部情况下的源模型微调前后精度差均不超过5pp。实验结果证明，我们的近边界数据在应用于模型所有权保护问题中，具有较好的保真度。因此，使用近边界数据推断模型所有权不用担心源模型受到较大的影响。
+本小节将对\ref{3}\ref{3.3}中使用私有近边界数据微调源模型产生的影响进行测试。我们针对不同数据集训练得到的源模型，使用不同规模的近边界数据以及不同的目标分类边界对源模型进行微调。
 
-\begin{table}[H]
+\begin{table}[h]
 	\centering
 	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.2}
+	\renewcommand\arraystretch{1.3}
 	\caption{CIFAR-10上不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
 	\label{table:3}
 	\begin{tabular*}{14cm}{@{\extracolsep{\fill}} l l c c}
@@ -161,25 +240,25 @@
 		\multirow{20}{8em}{CIFAR-10\ (0.886)}         &\multirow{4}{6em}{分类边界1}&  64   & 0.873    \\
 		&                           &  128  & 0.862     \\
 		&                           &  256  & 0.862     \\
-		&                           &  512  & 0.854     \\
+		&                           &  512  & 0.856     \\
 		\cline{2-4}						   
-		&\multirow{4}{6em}{分类边界2} &  64  & 0.871 \\
+		&\multirow{4}{6em}{分类边界2} &  64  & 0.871    \\
 		&                            &  128 & 0.870     \\
 		&                            &  256 & 0.860     \\
-		&                            &  512 & 0.844     \\
+		&                            &  512 & 0.859     \\
 		
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界3} & 64   & 0.871  \\
+		&\multirow{4}{6em}{分类边界3} & 64   & 0.871    \\
 		&                            &  128 & 0.868     \\
 		&                            &  256 & 0.858     \\
-		&                            &  512 & 0.856     \\
+		&                            &  512 & 0.855     \\
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界4} & 64   & 0.873  \\
+		&\multirow{4}{6em}{分类边界4} & 64   & 0.873     \\
 		&                            &  128 & 0.873     \\
 		&                            &  256 & 0.866     \\
 		&                            &  512 & 0.862     \\
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界5} & 64  & 0.876  \\
+		&\multirow{4}{6em}{分类边界5} & 64  & 0.876    \\
 		&                            & 128 & 0.866     \\
 		&                            & 256 & 0.868     \\
 		&                            & 512 & 0.861     \\
@@ -187,11 +266,10 @@
 	\end{tabular*}
 \end{table}
 
-
-\begin{table}[H]
+\begin{table}[h]
 	\centering
 	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.2}
+	\renewcommand\arraystretch{1.3}
 	\caption{Heritage上不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
 	\label{table:4}
 	\begin{tabular*}{14cm}{@{\extracolsep{\fill}} l l c c}
@@ -199,39 +277,39 @@
 		\hline
 		数据集 \ (准确率)   &   分类边界   &  数据数量  &   微调后准确率    \\
 		\hline
-		\multirow{20}{8em}{Heritage\ (0.879)}         &\multirow{4}{6em}{分类边界1}&  64   & 0.856    \\
-		&                           &  128  & 0.825     \\
-		&                           &  256  & 0.830     \\
-		&                           &  512  & 0.797     \\
+		\multirow{20}{8em}{Heritage\ (0.879)}         &\multirow{4}{6em}{分类边界1}&  64   & 0.862    \\
+		&                           &  128  & 0.858     \\
+		&                           &  256  & 0.854     \\
+		&                           &  512  & 0.848     \\
 		\cline{2-4}						   
-		&\multirow{4}{6em}{分类边界2} &  64  & 0.823 \\
-		&                            &  128 & 0.839     \\
-		&                            &  256 & 0.841     \\
-		&                            &  512 & 0.779     \\
+		&\multirow{4}{6em}{分类边界2} &  64  & 0.867 \\
+		&                            &  128 & 0.862     \\
+		&                            &  256 & 0.859     \\
+		&                            &  512 & 0.851     \\
 		
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界3} & 64   & 0.848  \\
-		&                            &  128 & 0.826     \\
-		&                            &  256 & 0.779     \\
-		&                            &  512 & 0.791     \\
+		&\multirow{4}{6em}{分类边界3} & 64   & 0.865  \\
+		&                            &  128 & 0.857     \\
+		&                            &  256 & 0.855     \\
+		&                            &  512 & 0.851     \\
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界4} & 64   & 0.819  \\
-		&                            &  128 & 0.795     \\
-		&                            &  256 & 0.803     \\
-		&                            &  512 & 0.783     \\
+		&\multirow{4}{6em}{分类边界4} & 64   & 0.863  \\
+		&                            &  128 & 0.860     \\
+		&                            &  256 & 0.854     \\
+		&                            &  512 & 0.849     \\
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界5} & 64  & 0.843  \\
-		&                            & 128 & 0.851     \\
-		&                            & 256 & 0.776     \\
-		&                            & 512 & 0.774     \\
+		&\multirow{4}{6em}{分类边界5} & 64  & 0.866  \\
+		&                            & 128 & 0.861     \\
+		&                            & 256 & 0.857     \\
+		&                            & 512 & 0.853     \\
 		\hline	
 	\end{tabular*}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[h]
 	\centering
 	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.2}
+	\renewcommand\arraystretch{1.3}
 	\caption{Intel\_image上不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
 	\label{table:5}
 	\begin{tabular*}{14cm}{@{\extracolsep{\fill}} l l c c}
@@ -239,44 +317,50 @@
 		\hline
 		数据集 \ (准确率)   &   分类边界   &  数据数量  &   微调后准确率    \\
 		\hline
-		\multirow{20}{8em}{Intel\_image\ (0.794)}    &\multirow{4}{6em}{分类边界1}&  64   & 0.755    \\
-		&                           &  128  & 0.769     \\
-		&                           &  256  & 0.756     \\
-		&                           &  512  & 0.779     \\
+		\multirow{20}{8em}{Intel\_image\ (0.854)}    &\multirow{4}{6em}{分类边界1}&  64   & 0.825    \\
+		&                           &  128  & 0.829     \\
+		&                           &  256  & 0.826     \\
+		&                           &  512  & 0.839     \\
 		\cline{2-4}						   
-		&\multirow{4}{6em}{分类边界2} &  64  & 0.770 \\
-		&                            &  128 & 0.741     \\
-		&                            &  256 & 0.768     \\
-		&                            &  512 & 0.777     \\
+		&\multirow{4}{6em}{分类边界2} &  64  & 0.843 \\
+		&                            &  128 & 0.839     \\
+		&                            &  256 & 0.828     \\
+		&                            &  512 & 0.824     \\
 		
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界3} &  64  & 0.781  \\
-		&                            &  128 & 0.753     \\
-		&                            &  256 & 0.764     \\
-		&                            &  512 & 0.752     \\
+		&\multirow{4}{6em}{分类边界3} &  64  & 0.841  \\
+		&                            &  128 & 0.833     \\
+		&                            &  256 & 0.831     \\
+		&                            &  512 & 0.823     \\
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界4} & 64   & 0.787  \\
-		&                            &  128 & 0.751     \\
-		&                            &  256 & 0.762     \\
-		&                            &  512 & 0.747     \\
+		&\multirow{4}{6em}{分类边界4} & 64   & 0.847  \\
+		&                            &  128 & 0.843     \\
+		&                            &  256 & 0.838     \\
+		&                            &  512 & 0.831     \\
 		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界5} & 64  & 0.786  \\
-		&                            & 128 & 0.764     \\
-		&                            & 256 & 0.761     \\
-		&                            & 512 & 0.765     \\
+		&\multirow{4}{6em}{分类边界5} & 64  & 0.846  \\
+		&                            & 128 & 0.834     \\
+		&                            & 256 & 0.829     \\
+		&                            & 512 & 0.825     \\
 		\hline	
 	\end{tabular*}
 \end{table}
 	
+如表\ref{table:3}，表\ref{table:4}，表\ref{table:5}所示，随着微调模型近边界数量的增多，模型准确率逐渐下降，但是在几乎全部情况下，源模型微调前后的精度差没有超过3\%，这是本文方法可以接受的范围。因为私有近边界数据本身不是原始数据集的一部分，所以使用规模变大时，对源模型的影响也会变大。但是在另一个角度，微调源模型的目的是使得我们的私有近边界数据更加靠近分类边界，来提高后续推断模型所有权的置信度，所以，使用更多的近边界数据微调源模型效果会更好。因此，在实际情况中，微调数据规模的选择是一个模型精度和推断置信度的折衷。
+
+表中整体情况下，模型的准确率都下降不多。一方面，这是因为本身微调的数据和源模型的训练数据相比只是一小部分，不会对模型产生太大的影响。另一方面，在微调源模型时，我们将学习率设置为0.0001，这是很低的。并且使用原始数据对模型进行交替训练，训练轮次不超过10次。所以微调之后，模型准确率没有受到很大的影响。
+
+实验结果证明，本文的私有近边界数据在应用于模型所有权保护问题时，模型具有较好的保真度。因此，使用近边界数据推断模型所有权不用担心源模型受到较大的影响。	
+	
+
 \section{推断模型所有权的有效性}\label{5.5}
 
-在本节中，我们讨论了我们方法在与其他近边界数据在盗窃模型上的性能对比，我们模拟了盗窃者可能会提供的近边界数据，该数据由几部分组成，包括(1)从原始数据中挑选出的近边界数据，(2)由FGSM和CW生成的一些对抗性样本。我们针对不同的目标分类边界，按照\ref{4.2.3}中进行假设检验并计算在不同数据集和不同盗窃模型上的$\Delta\mu$和$p$值。如表\ref{table:2}所示，$p$值显著低于0.05在全部情况中。换句话说，我们的方法在不同的盗窃方法中推断模型所有权均有显著的效果。尽管在模型蒸馏上表现不如其他情况。实验结果表明使用私有的近边界数据对大多数模型盗窃技术都是可靠的，我们可以声称模型被盗窃的置信度至少为95\%，模型蒸馏是我们方法的最大挑战，也同样是其他研究面临的巨大挑战，在我们的实验中，可以观察到我们的模型始终可以将蒸馏模型标记为被盗的模型，这证明了我们方法的鲁棒性。
-
+本文提出的方法目的是推断模型所有权，本节将对此方法的有效性进行测试。根据本文提出方法的流程，模型所有者和可疑对手均需要提供各自的近边界数据，然后输入模型获得输出，再根据\ref{4.2.3}中提到的假设检验进行结果比对，判断可疑模型是否从源模型派生。
 
 \begin{table}[H]
 	\centering
 	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.5}
+	\renewcommand\arraystretch{1.8}
 	\caption{推断模型所有权}
 	\label{table:2}
 	\resizebox{\linewidth}{!}{
@@ -311,109 +395,146 @@
 }
 \end{table}
 
+在本节中，我们讨论本文方法生成的私有近边界数据与其他近边界数据在盗窃模型上的性能对比。首先，我们模拟了盗窃者可能会提供的近边界数据，该数据由两部分组成，包括(1)从原始数据中挑选出的近边界数据，(2)由FGSM和CW生成的一些对抗性样本。然后针对不同的目标分类边界，进行假设检验并计算在不同数据集和不同盗窃模型上的$\Delta\mu$和$p$值。
 
+如表\ref{table:2}所示，$p$值在每个数据集，每条分类边界上呈从上到下增大的趋势，$\Delta\mu$呈减小趋势，在全部情况中，$p$值均低于0.05。
+也就是说，本文的方法在不同的盗窃方法中推断模型的所有权均有显著的效果，我们至少有95\%以上的置信度确定可疑模型是盗窃模型。
 
+在假设检验中，$p$值越小，$\Delta\mu$越大说明结果越可靠，推断的置信度越高。表中从上到小$p$值减小是因为这些方法对模型的修改逐渐增大，尤其是在知识蒸馏上，模型知识蒸馏是本文方法的最大挑战，也同样是其他研究面临的巨大挑战。在我们的实验中，可以观察到我们的方法始终可以将蒸馏模型推断为被盗模型。因此，实验结果表明使用私有的近边界数据对大多数模型盗窃技术都是可靠的，我们可以声称模型被盗窃的置信度至少为95\%，证明了本文方法的有效性和鲁棒性。
 
 
 \section{不同规模近边界数据的可伸缩性扩展}\label{5.6}
 
-在本节中，我们测试了不同规模的近边界数据在推断模型所有权上的可伸缩性。回想我们的方法需要对数据进行采样从而进行假设检验，通常来说样本数量越大，对检验过程中因随机而产生的不利影响越少，在推断所有权上越有信心。如图\ref{CIFAR-10上推断模型所有权的扩展性}图\ref{Heritage上推断模型所有权的扩展性}图\ref{Intel-image上推断模型所有权的扩展性}所示，$p$值随着近边界数据的规模增大而减少，也就是说近边界数据越多推断的信心也越多，但这并不说明我们的方法对小数量的近边界数据缺少鲁棒性，从表中我们可以观察到即使数据量为64 的情况下，$p$值仍小于0.05，这证明我们的方法对于小数量同样有显著的效果。
+在本节中，我们将测试不同规模的近边界数据在推断模型所有权上的可伸缩性。我们的方法需要对数据进行采样从而进行假设检验，通常来说样本数量越大，对检验过程中因随机因素而产生的不利影响就会越小，更能准确的推断模型所有权。
 
-\begin{figure}[htbp]%%图,[htbp]是浮动格式
+\begin{figure*}[!htb]
 	\centering
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-2-p-value.png}
-		\centerline{(a)分类边界1}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-3-p-value.png}
-		\centerline{(b)分类边界2}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-7-p-value.png}
-		\centerline{(c)分类边界3}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{CIFAR-10-5-6-p-value.png}
-		\centerline{(d)分类边界4}
-	\end{minipage}
-\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-\caption{CIFAR-10上推断模型所有权的扩展性}
-\label{CIFAR-10上推断模型所有权的扩展性}
-\end {figure}
-	
-\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-2-p-value.png}} 
+	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-3-p-value.png}} 
+	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-7-p-value.png}} 
+	\caption{CIFAR-10上推断模型所有权的扩展性}
+	\label{CIFAR-10上推断模型所有权的扩展性}
+	\setlength{\abovecaptionskip}{7mm}
+\end{figure*}
+
+\begin{figure*}[!htb]
 	\centering
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-p-value.png}
-		\centerline{(a)分类边界1}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-p-value.png}
-		\centerline{(b)分类边界2}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-p-value.png}
-		\centerline{(c)分类边界3}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-p-value.png}
-		\centerline{(d)分类边界4}
-	\end{minipage}
-\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-\caption{Heritage上推断模型所有权的扩展性}
-\label{Heritage上推断模型所有权的扩展性}
-\end {figure}
-		
-\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Heritage-3-0-p-value.png}} 
+	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Heritage-3-1-p-value.png}} 
+	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Heritage-3-4-p-value.png}} 
+	\caption{Heritage上推断模型所有权的扩展性}
+	\label{Heritage上推断模型所有权的扩展性}
+	\setlength{\abovecaptionskip}{7mm}
+\end{figure*}
+
+\begin{figure*}[!htb]
 	\centering
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-p-value.png}
-		\centerline{(a)分类边界1}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-p-value.png}
-		\centerline{(b)分类边界2}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-p-value.png}
-		\centerline{(c)分类边界3}
-	\end{minipage}
-	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
-		\centering
-		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-p-value.png}
-		\centerline{(d)分类边界4}
-	\end{minipage}
-\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-\caption{Intel\_image上推断模型所有权的扩展性}
-\label{Intel-image上推断模型所有权的扩展性}
-\end {figure}
+	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-1-p-value.png}} 
+	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-4-p-value.png}} 
+	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-5-p-value.png}} 
+	\caption{Intel\_image上推断模型所有权的扩展性}
+	\label{Intel-image上推断模型所有权的扩展性}
+	\setlength{\abovecaptionskip}{7mm}
+\end{figure*}
+
+%\begin{figure}[htbp]%%图,[htbp]是浮动格式
+%	\centering
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-2-p-value.png}
+%		\centerline{(a)分类边界1}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-3-p-value.png}
+%		\centerline{(b)分类边界2}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-7-p-value.png}
+%		\centerline{(c)分类边界3}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-5-6-p-value.png}
+%		\centerline{(d)分类边界4}
+%	\end{minipage}
+%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+%\caption{CIFAR-10上推断模型所有权的扩展性}
+%\label{CIFAR-10上推断模型所有权的扩展性}
+%\end {figure}
+%	
+%\begin{figure}[htbp]%%图,[htbp]是浮动格式
+%	\centering
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-p-value.png}
+%		\centerline{(a)分类边界1}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-p-value.png}
+%		\centerline{(b)分类边界2}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-p-value.png}
+%		\centerline{(c)分类边界3}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-p-value.png}
+%		\centerline{(d)分类边界4}
+%	\end{minipage}
+%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+%\caption{Heritage上推断模型所有权的扩展性}
+%\label{Heritage上推断模型所有权的扩展性}
+%\end {figure}
+%		
+%\begin{figure}[htbp]%%图,[htbp]是浮动格式
+%	\centering
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-p-value.png}
+%		\centerline{(a)分类边界1}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-p-value.png}
+%		\centerline{(b)分类边界2}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-p-value.png}
+%		\centerline{(c)分类边界3}
+%	\end{minipage}
+%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
+%		\hspace{2mm}
+%		\centering
+%		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-p-value.png}
+%		\centerline{(d)分类边界4}
+%	\end{minipage}
+%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
+%\caption{Intel\_image上推断模型所有权的扩展性}
+%\label{Intel-image上推断模型所有权的扩展性}
+%\end {figure}
+
+如图\ref{CIFAR-10上推断模型所有权的扩展性}，图\ref{Heritage上推断模型所有权的扩展性}，图\ref{Intel-image上推断模型所有权的扩展性}所示，$p$值在不同数据集，不同分类边界上，随着近边界数据规模的增大而减小，而$p$值越小说明假设检验能够以更高的置信度确定可疑模型是被盗模型。
+
+本文的方法在进行假设检验前，需要将私有的近边界数据和可疑对手的近边界数据分别输入可疑模型。可疑对手近边界数据是通过从原始数据挑选和FGSM，CW生成的对抗性样本组成的。因此，由于随机因素，存在一小部分可疑对手的数据到分类边界的距离和我们的私有近边界数据相近，甚至比我们的小，这会导致一定的误判情况。随着测试样本的增大，这种随机因素的影响会被逐渐消除，所以从图中可以观察到，随着近边界数据规模的增大，$p$值逐渐减小。但这并不说明我们的方法对小数量的近边界数据缺少鲁棒性，从图中我们可以观察到即使数据量为64的情况下，$p$值仍然小于0.05，这证明我们的方法对于小数样本量同样有显著的效果。
 
 \section{本章小结}
 
-本章从多个方面测试了我们方法的各个指标，有效的证明了我们提出的方法的有效性。
-
+本章我们在CIFAR-10，Heritage，Intel\_image这三个数据集上对本文提出的方法进行了全面的测评分析。首先对各种对抗性样本生成方法进行测试，初始近边界数据生成算法的选择非常重要，这影响到生成数据到分类边界的距离，是方法最后假设检验的指标。接着对数据近边界特性进行了评估，结果表明近边界数据的近边界性可以从源模型转移到派生出的模型上，这是本文方法的重要基础。然后测试了微调分类边界对模型准确率的影响，因为本文的方法不应该对模型精度造成很大的影响，否则该方法失去了意义。接着测试了本文方法推断模型所有权的有效性，结果表明该方法对不同的模型盗窃方法均能以95\%以上的置信度声明可疑模型是盗窃模型。最后对假设检验样本规模进行了扩展，在更大规模的情况下，本文的方法会更加有效，当然，也适用于类似64的小样本数据情况。
 

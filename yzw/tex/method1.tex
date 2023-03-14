@@ -113,7 +113,7 @@ FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon
 \end{equation}
 $$s.t. \ x + \delta \in [0,1]^m$$
 
-\noindent 其中$target$是目标标签，$c$是惩罚因子，用于权衡$Loss2$的重要性，通过二分查找来寻找合适的$c$，$Loss1$约束对抗性样本$x + \delta$和原始样本$x$尽可能相似，$Loss2$约束对抗性样本$x + \delta$的决策结果为目标标签。
+\noindent 其中$target$是目标标签，$c$是惩罚因子，用于权衡$Loss2$的影响大小，通过二分查找来寻找合适的$c$，$Loss1$约束对抗性样本$x + \delta$和原始样本$x$尽可能相似，$Loss2$约束对抗性样本$x + \delta$的决策结果为目标标签。
 
 根据定义\ref{def:3}，数据样本$x$距离分类边界的距离是$distance = \vert g_i(x) - g_j(x) \vert$，我们希望生成的对抗性样本距离分类边界的距离尽可能近。本文算法迭代过程中引入这一目标，改进算法迭代的过程，在保持生成对抗性样本靠近分类边界的同时，提高算法效率。具体而言，在迭代过程中，我们仅在$distance$变小时更新距离参数和对抗性样本，并在$distance$小于预定的阈值$\theta$时提前终止迭代，具体的过程如算法\ref{alg:1}所示。
 
@@ -160,28 +160,77 @@ $$s.t. \ x + \delta \in [0,1]^m$$
 由于通过生成对抗性样本的方法构建近边界数据这一步骤十分容易复现，并且现在大多数模型训练使用的数据都来源于公开数据。因此我们需要从公开的训练数据中构建自己私有化的近边界数据，以防止模型所有者的近边界数据被轻易模仿。在本文中，我们希望可以通过训练一种模型学习上一节中生成的近边界对抗性样本特征，并以此生成新的近边界数据。这种新的数据从视觉上不一定和原始数据类似，但其原始的特征以及添加的噪声需要被学习，并根据提取到的特征生成的新样本对于源模型同样是近边界数据。因为本文用到的是图像样本，CNN可以很好的处理图像，因此，在本文中我们设计了一种基于DCGAN\cite{radford2015unsupervised}的特征提取器，提取近边界数据的特征之后，使用生成器并生成私有化近边界数据。
 %注意生成器以，$CW$-$L_2$生成的对抗性示例作为输入，并输出私有化后的近边界数据。
 
-具体而言，DCGAN 的结构中包括一个判定器D 和一个生成器G，其本质上是一个博弈过程。生成器学习样本特征生成假数据，判定器判断生成器的结果。DCGAN 的目标函数如\ref{eq:3.3}所示，是一个生成网络和判别网络的互相对抗的过程，生成器尽可能生成逼真输入样本，判别器则尽可能去判别该样本是真实样本还是假样本。
-\begin{equation}
-	\label{eq:3.9}
-	\begin{split}
-		\mathop{min} \limits_{G} \mathop{max} \limits_{D} V(D, G) &= \mathop{min} \limits_{G} \mathop{max} \limits_{D} E_{x \sim P_{data}(x)}[logD(x)] \\
-		&+ E_{T \sim P_{T}(T)}[log(1 - D(G(T)))]
-	\end{split}
-\end{equation}
-其中$x$表示真实数据样本，$T$表示用于生成样本的随机噪声，GAN对噪声$T$的分布没有特别要求，但是常用的有高斯分布，均匀分布。注意这里的优化过程是一个交替的过程。
+\begin{figure}[htbp]%%图,[htbp]是浮动格式
+	\centering
+	\includegraphics[width=14.5cm,height=8cm]{DCGAN网络结构图.pdf}
+	%	\centerline{原始样本}
+	\setlength{\abovecaptionskip}{5mm} %图片标题与图片距离
+	\caption{DCGAN网络结构图}
+	\label{DCGAN网络结构图}
+\end {figure}
 
-我们希望DCGAN能够学习到足够多的近边界数据特征，尝试修改其判定器的目标函数，在保留梯度的情况下将其与源模型的结果相连，得到的结果在同样的生成规模下确实优于原始DCGAN 的生成情况。然而，考虑到在两者的效率，实际情况下生成的结果并无较大区别。
+如图\ref{DCGAN网络结构图}所示，DCGAN的大体结构与训练方式和普通GAN类似，但是DCGAN将CNN与GAN相结合，生成器$G$和判定器$D$都用CNN替换原始GAN的全连接网络。得益于CNN对图像的处理能力，DCGAN极大提升了网络训练稳定性和生成样本的质量。具体而言，DCGAN主要是从网络架构上改进了原始的GAN，主要改进如下：
 
-尽管构建的近边界数据已经都位于目标分类边界附近，但我们仍希望近边界数据最大程度上靠近目标分类边界。近边界数据与目标分类边界的距离越近，推断模型所有权成功的可能性就越大。此外，生成的近边界数据虽然只被模型所有者拥有，但对于一些功能易被泛化的模型，近边界的特性仍有可能被泛化。因此，本文提出使用近边界数据微调源模型的目标分类边界。具体而言，如\ref{eq:3.4}所示，$Loss_{FT}$是针对目标分类边界的损失函数，其中$n$是该目标分类边界的近边界数据的数量，$x_i'$是生成的近边界数据，$g_t(\cdot)$和$g_s(\cdot)$分别表示目标分类概率和源分类概率，$Loss_{FT}$本质是希望近边界数据更靠近目标分类边界$Loss_{FM}$是源模型的损失函数，我们设计两者交替训练微调源模型，与DCGAN 的过程相似，是一个博弈的过程。
+\begin{enumerate}
+	\renewcommand{\labelenumi}{\theenumi)}
+	\item DCGAN的生成器和判别器均去掉CNN的池化层，生成器使用反卷积层还原图片，判别器保留CNN的整理架构，使用卷积层提取图片特征。
+	\item 在生成器和判别器中都使用Batch Normalization层，加速模型训练的同时提升训练的稳定性。
+	\item 生成器除最后一层使用Tanh激活函数外，其余层使用ReLU，判别器所有层均使用LeakyReLU。
+\end{enumerate}
+
+我们希望DCGAN能够学习到足够多的近边界数据特征，尝试修改其判定器的目标函数，在保留梯度的情况下将其与源模型的结果相连，得到的结果在同样的生成规模下确实优于原始DCGAN的生成情况。然而，考虑到两者的效率，实际情况下生成的结果并无较大区别。
+
+训练DCGAN的具体流程如算法\ref{alg:2}所示。
+
+\begin{algorithm}[!h] 
+	\setstretch{1.3}
+	\caption{训练DCGAN模型}
+	\label{alg:2}
+	\begin{algorithmic}[1]
+		
+		\Require 近边界数据$\tilde{D}$；批处理大小$batchsize$；训练轮次$epoch$；损失函数$Loss$
+		\Ensure 训练好的DCGAN模型
+		\State 参数初始化：$learning \ rate \gets 0.0002$，$real\_label \gets 1$，$fake\_label \gets 0$
+		\For{$i=1,2,...,epoch$}
+		\State 随机噪声$z \gets 100$ 
+		\State $x' \gets G(z)$
+		\State $Loss1 \gets Loss(D(x), real\_label)$  \Comment $x$是近边界数据样本
+		\State $Loss2 \gets Loss(D(x'), fake\_label)$
+		\State $Loss_D \gets Loss1 + Loss2$
+		\State $Loss_G \gets Loss(D(x'), real\_label)$ \Comment 生成器希望$D(x') $接近$real\_label$
+		\State 使用$Adam$更新生成器$G$，判别器$D$参数
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+尽管构建的近边界数据已经都位于目标分类边界附近，但我们仍希望近边界数据最大程度上靠近目标分类边界。近边界数据与目标分类边界的距离越近，推断模型所有权成功的可能性就越大。此外，生成的近边界数据虽然只被模型所有者拥有，但对于一些功能易被泛化的模型，近边界的特性仍有可能被泛化。因此，本文提出使用近边界数据微调源模型的目标分类边界。如式\ref{eq:3.4}所示，$Loss_{FT}$是针对目标分类边界的损失函数。
 
 \begin{equation}
 	\label{eq:3.10}
 	Loss_{FT} = \frac{1}{n} \sum^{n}_{i = 1} (g_t(x_i') - g_s(x_i'))^2
 \end{equation}
 
-微调目标分类边界使近边界数据与源模型之间的联系更加紧密。注意，我们只微调目标分类边界，且通过交替微调尽可能减少微调对源模型的影响，如表\ref{table:state}所示，微调前后源模型的精度差不超过5\%，因此，微调对于源模型的性能影响十分微小，甚至可以被忽略，但却有效提高了最后的所有权推断效果。更多的准确度测试结果可以在\ref{5}\ref{5.5}中找到。
+\noindent 其中$n$是该目标分类边界的近边界数据的数量，$x_i'$是生成的近边界数据，$g_t(\cdot)$和$g_s(\cdot)$分别表示目标分类概率和源分类概率，$Loss_{FT}$本质是希望近边界数据更靠近目标分类边界。$Loss_{FM}$是源模型的损失函数，我们设计两者交替训练微调源模型，与DCGAN 的过程相似，这是一个博弈的过程，具体的流程如算法\ref{alg:3}所示。
 
-\begin{table}[H]
+\begin{algorithm}[H] 
+	\setstretch{1.3}
+	\caption{微调源模型}
+	\label{alg:3}
+	\begin{algorithmic}[1]
+		
+		\Require 原始数据集$D$；私有化近边界数据$D'$；批处理大小$batchsize$；训练轮次$epoch$；损失函数$Loss_{FT}$,$Loss_{FM}$；源模型$M$
+		\Ensure 微调后的源模型$M'$
+		\State 参数初始化：$learning \ rate \gets 0.0001$
+		\For{$i=1,2,...,epoch$}                          
+		\State $Loss1 \gets Loss_{FT}(g_t(x') , g_s(x'))$ \Comment $g_k(x')$：$x'$在第$k$类上的概率
+		\State $Loss2 \gets Loss_{FM}(M(x), label)$ \Comment $label$指正常样本的原始标签
+		\State 使用$Adam$更新生成器$G$，判别器$D$参数
+		\EndFor
+	\end{algorithmic}
+\end{algorithm}
+
+\noindent 其中$x$指正常的样本，$x'$指DCGAN生成器生成的私有化近边界数据。
+\begin{table}[h]
 	\centering
 	\setlength{\arrayrulewidth}{0.5mm}
 	\renewcommand\arraystretch{1.8}
@@ -194,13 +243,16 @@ $$s.t. \ x + \delta \in [0,1]^m$$
 		\hline
 		CIFAR-10      &     0.886        &     0.873               \\
 		
-		Heritage      &     0.879        &     0.856               \\
+		Heritage      &     0.879        &     0.866               \\
 		
-		Intel\_image  &     0.794        &     0.786               \\
+		Intel\_image  &     0.854        &     0.846               \\
 		\hline		
 	\end{tabular*}
 \end{table}
 
+微调目标分类边界使近边界数据与源模型之间的联系更加紧密。注意，我们只微调目标分类边界，且通过交替微调尽可能减少微调对源模型的影响，如表\ref{table:state}所示，微调前后源模型的精度差不超过3\%，因此，微调对于源模型的性能影响十分微小，甚至可以被忽略，但却有效提高了最后的所有权推断效果。更多微调目标分类边界对准确度的影响测试在\ref{5}\ref{5.4}中。
+
+
 \section{本章小结}
 
-本章介绍了近边界数据的特征，并详细阐述了生成私有近边界数据的方法。首先通过CW方法，生成近边界对抗性样本，然后利用对抗生成网络的学习特征，将近边界数据私有化，最后通过自定义损失函数交替微调源模型，在几乎不损失模型精度的情况下，使其近边界数据更加靠近分类边界。
+本章主要描述了近边界数据的特性和生成近边界数据并将其私有化的过程。对抗性样本一般位于DNN模型分类边界上，并且可以很好的转移到其派生出的模型上。鉴于模型攻击一般会对源模型进行修改，本章提出了鲁棒性更强的近边界数据的概念，数据的近边界性也可以转移到其派生模型上，改变的是近边界数据到分类边界的距离。由于自然的近边界数据很少，本章对比了常见的生成对抗性样本的方法，在CW-$L_2$算法的基础上，引入了分类边界距离的概念来更快的生成近边界对抗性样本。考虑到敌手可能会产生近边界数据，我们设计了基于DCGAN的数据生成器，来私有化近边界数据，并在此基础上使用近边界数据微调源模型分类边界，提高所有权推断置信度。
