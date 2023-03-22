@@ -30,7 +30,7 @@ plt.plot(x, y5, 'v-', color='#FFC107', alpha=1, linewidth=1, label='剪枝50%')
 plt.plot(x, y6, 'x-', color='tan', alpha=1, linewidth=1, label='知识蒸馏')
 
 plt.legend(loc="upper right")
-plt.xlabel('近边界数据数量')
+plt.xlabel('近边界数据规模')
 plt.ylabel('log(p值)')
 plt.savefig('../yzw/image/Intel_image-3-4-p-value.png', dpi=300)
 plt.show()
