@@ -4,22 +4,17 @@
 
 \begin{zhaiyao}
 
-深度神经网络(Deep Neural Network, DNN)因其优越的性能已经应用于科学研究和日常生活的方方面面，给人们的生活带来了极大地便利。一个高性能DNN模型离不开复杂的结构设计，覆盖全面的数据集和昂贵的计算资源以及漫长的训练时间，所以DNN模型具有很高的商业价值和知识产权价值。
-
-近年来，模型盗窃行为时常出现，不法分子对DNN模型非法复制，派生和发布的行为都严重侵犯了模型所有者的知识产权。这引起人们逐渐重视模型的知识产权保护，许多研究者受到传统数字媒体水印的启发，从而设计模型水印和指纹用于验证模型所有权。然而，歧义性声明等攻击手段被用于破解模型水印和指纹，这对模型所有权验证工作造成了挑战。因此，本文提出了一种近边界数据作为获得模型所有权的证据，并创新性地提出了推断模型所有权而不是验证模型所有权。本文提出采用对抗性样本生成算法和生成对抗网络构造私有化的近边界数据，我们主要的观察结果是近边界数据在源模型和其衍生的盗窃模型中均表现出靠近分类边界的结果，模型所有者可以使用近边界数据作为DNN模型知识产权保护的技术支持。本文的主要工作如下：
+深度神经网络(Deep Neural Network, DNN)训练代价昂贵是导致模型知识产权保护问题逐渐被重视的原因。近年来，模型盗窃行为时常出现，不法分子对DNN模型非法复制，派生和发布的行为都严重侵犯了模型所有者的知识产权。许多研究者受到传统数字媒体水印的启发，从而设计模型水印和指纹用于验证模型所有权。然而，歧义性声明等攻击手段被用于破解模型水印和指纹，这对模型所有权验证工作造成了挑战。因此，需要设计一种知识产权保护方法能够解决上述问题。本文通过相关工作的调研，分析目前知识产权保护方法存在的难点与挑战，提出了一种基于近边界数据的模型所有权推断方法，主要工作如下：
 
 \begin{enumerate}
 	\renewcommand{\labelenumi}{\theenumi)}
-	\item 揭示了当前DNN模型所有权验证方案的脆弱性并确认了数据驱动推断模型所有权的有效性。
-	\item 提出了利用对抗性样本构造近边界数据以抵御模型窃取攻击。
-	\item 设计了基于生成对抗网络的近边界数据生成器和提出了一种损失函数用以微调源模型的目标分类边界，增加推断模型所有权的置信度。
-	\item 基于ResNet18和三个公开数据集进行了广泛的实验，实验结果证明了本文提出的近边界数据在推断模型所有权上的显著效果。
+	\item 揭示了当前DNN模型所有权验证方案的脆弱性并确认了数据驱动推断模型所有权的有效性。模型水印和模型指纹的方法通常用是检测嵌入的水印或者通过特定触发集来验证所有权，这种方式在面对歧义攻击击等强攻击时，并不具备很强的鲁棒性。DNN模型通过数据集训练，所以不管是源模型还是其派生出来的模型，总会包含一定数据中的知识，本文确认了数据驱动推断模型所有权方法的有效性。
+	\item 提出了利用对抗性样本构造近边界数据以抵御模型窃取攻击。对抗性样本一般位于模型分类边界上并且相较于其他不相关的模型，对抗性样本可以更好的转移到从原始模型派生出的模型上。因此，本文利用对抗性样本构造了近边界数据来推断模型所有权，抵御模型窃取攻击。
+	\item 设计了基于DCGAN的近边界数据生成器和提出了一种损失函数用以微调源模型的目标分类边界，增加推断模型所有权的置信度。为了防止近边界数据被轻易复制，本文使用DCGAN的生成器生成我们私有的近边界数据。在此基础之上，重新设计了模型损失函数微调源模型，在保持DNN模型性能的情况下，以95\%以上的置信度成功推断模型所有权。
+	\item 本文在三个公开数据集上对本文提出的方法做了详细的测试，实验结果证明了基于近边界数据推断模型所有权的有效性和鲁棒性。
 \end{enumerate}
 
-
-
 \end{zhaiyao}
-
 
 
 
@@ -31,8 +26,18 @@
 
 \begin{abstract}
 
+The high cost of training deep neural network(DNN) has led to an increasing focus on protecting the intellectual property rights of DNN models. In recent years, model theft has become a common problem, where unauthorized individuals illegally copy, derive and distribute DNN models, seriously violating the model owner's intellectual property rights. Many researchers have been inspired by traditional digital media watermarking and have designed model watermarks and fingerprints to verify model ownership. However, attack methods such as ambiguity statements have been used to crack model watermarks and fingerprints, which has presented a challenge to model ownership verification. Therefore, there is a need to design an intellectual property protection method that can address the above problems. This paper analyzes the challenges and difficulties of current intellectual property protection methods through related work research and proposes a method for model ownership inference based on near-boundary data. The main contributions of this work are as follows:
 
-This is the abstract.
+\begin{enumerate}
+	\renewcommand{\labelenumi}{\theenumi)}
+	\item We reveal the vulnerability of current DNN model ownership verification schemes and confirming the effectiveness of data-driven ownership inference models. The methods of model watermark and model fingerprint are usually used to detect embedded watermarks or to verify ownership through specific trigger sets. However, this method is not very robust against strong attacks such as ambiguity attacks. Since DNN models are trained on a dataset, both the source model and its derivatives will contain some knowledge from the data. This paper confirms the effectiveness of data-driven ownership inference models.
+	\item We propose the use of adversarial samples to construct near-boundary data to resist model theft attacks. Adversarial samples are generally located on the model classification boundary and can be better transferred to models derived from the original model compared to other unrelated models. Therefore, this paper uses adversarial samples to construct near-boundary data for ownership inference and to resist model theft attacks.
+	\item We design a near-boundary data generator based on DCGAN and proposing a loss function to fine-tune the target classification boundary of the source model to increase the confidence of ownership inference. In order to prevent near-boundary data from being easily copied, this paper uses a DCGAN generator to generate private near-boundary data. On this basis, the model loss function is redesigned to fine-tune the source model, successfully inferring model ownership with over 95% confidence while maintaining DNN model performance.
+	\item We conduct detailed tests on three public datasets to verify the effectiveness and robustness of the proposed method based on near-boundary data for model ownership inference. The experimental results show the effectiveness and robustness of ownership inference based on near-boundary data.
+\end{enumerate}
+
+
+
 
 \end{abstract}
 
