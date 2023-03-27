@@ -23,8 +23,8 @@
 
 \begin{table}[H]
 	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.8}
+%	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.2}
 	\caption{模型参数信息}
 	\label{table:10}
 	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c c c }
@@ -47,8 +47,8 @@
 
 \begin{table}[H]
 	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.6}
+%	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.2}
 	\caption{硬件与软件配置}
 	\label{table:11}
 	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c }
@@ -83,9 +83,9 @@
 
 \begin{table}[H]
 	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.5}
-	\caption{不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
+%	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.2}
+	\caption{不同算法生成样本到分类边界的平均距离}
 	\label{table:1}
 	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c c c c}
 		
@@ -114,105 +114,50 @@ FGSM，IGSM，RFGSM和CW-$L_2$到分类边界的距离如表\ref{table:1}所示�
 
 本文提出的近边界数据不仅在源模型在表现出了近边界性，在所有盗窃模型中也表现出了这个特点，数据近边界特性的可转移性，是本文提出方法的重要基础。本节将在三个数据集和不同分类边界上对近边界数据的近边界性和可转移性进行测评。
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 	\centering
-	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-2-distance.png}} 
-	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-3-distance.png}} 
-	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-7-distance.png}} 
-	\caption{CIFAR-10上不同分类边界下的近边界数据表现}
+%	\setlength{\abovecaptionskip}{0mm}
+%		\vspace{-3mm}
+%	\setlength{\belowcaptionskip}{-4mm} %调整图片标题与下文距离
+	\subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-4-2-distance.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-4-3-distance.pdf}}
+    \subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-4-7-distance.pdf}}
+    \subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-5-6-distance.pdf}}
+	\caption{CIFAR-10上4个不同分类边界下的近边界数据表现}
 	\label{CIFAR-10上不同分类边界下的近边界数据表现}
-    \setlength{\abovecaptionskip}{7mm}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 	\centering
-	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Heritage-3-0-distance.png}} 
-	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Heritage-3-1-distance.png}} 
-	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Heritage-3-4-distance.png}} 
-	\caption{Heritage上不同分类边界下的近边界数据表现}
+%	\setlength{\abovecaptionskip}{0mm}
+%		\vspace{-3mm}
+%	\setlength{\belowcaptionskip}{-4mm} %调整图片标题与下文距离
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-3-0-distance.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-3-1-distance.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-3-4-distance.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-7-6-distance.pdf}} 
+	\caption{Heritage上4个不同分类边界下的近边界数据表现}
 	\label{Heritage上不同分类边界下的近边界数据表现}
-	\setlength{\abovecaptionskip}{7mm}
-\end{figure*}
+\end{figure}
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 	\centering
-	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-1-distance.png}} 
-	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-4-distance.png}} 
-	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-5-distance.png}} 
-	\caption{Intel\_image上不同分类边界下的近边界数据表现}
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-3-1-distance.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-3-4-distance.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-3-5-distance.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-5-0-distance.pdf}}
+	\caption{Intel\_image上4个不同分类边界下的近边界数据表现}
 	\label{Intel-image上不同分类边界下的近边界数据表现}
-	\setlength{\abovecaptionskip}{7mm}
-\end{figure*}
-%\begin{figure}[htbp]%%图,[htbp]是浮动格式
-%	\centering
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-distance.png}
-%		\centerline{(a)分类边界1}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-distance.png}
-%		\centerline{(b)分类边界2}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-distance.png}
-%		\centerline{(c)分类边界3}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-distance.png}
-%		\centerline{(d)分类边界4}
-%	\end{minipage}
-%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-%\caption{Heritage上不同分类边界下的近边界数据表现}
-%\label{Heritage上不同分类边界下的近边界数据表现}
-%\end {figure}
-%
-%\begin{figure}[htbp]%%图,[htbp]是浮动格式
-%	\centering
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-distance.png}
-%		\centerline{(a)分类边界1}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-distance.png}
-%		\centerline{(b)分类边界2}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-distance.png}
-%		\centerline{(c)分类边界3}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-distance.png}
-%		\centerline{(d)分类边界4}
-%	\end{minipage}
-%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-%\caption{Intel\_image上不同分类边界下的近边界数据表现}
-%\label{Intel-image上不同分类边界下的近边界数据表现}
-%\end {figure}
+\end{figure}
 
 如图\ref{CIFAR-10上不同分类边界下的近边界数据表现}，图\ref{Heritage上不同分类边界下的近边界数据表现}，图\ref{Intel-image上不同分类边界下的近边界数据表现}所示, 本文提出的近边界数据在所有盗窃模型中都表现出了靠近分类边界的特性。从图中可以看出，相比于其他所有模型，近边界数据在源模型上距离分类边界的距离最近，这主要是三方面的原因：
 
-\begin{enumerate}
-	\renewcommand{\labelenumi}{\theenumi)}
-	\item 初始的近边界样本是在源模型的基础上生成的，并且从众多生成对抗性样本的方法中挑选了效果最好的CW-$L_2$方法，然后对该方法进行改进，使之生成距离分类边界更近的对抗性样本。
-	\item 使用DCGAN生成器私有化近边界数据后，设计了新的损失函数微调源模型，这使得私有近边界数据同样非常靠接模型分类边界。
-	\item 被盗模型在从源模型派生的过程中，涉及到模型的修改，这些修改操作虽然不会使近边界数据在这些模型上失去近边界性，但是会使它们稍微偏离模型分类边界。
-\end{enumerate}
+1）初始的近边界样本是在源模型的基础上生成的，并且从众多生成对抗性样本的方法中挑选了效果最好的CW-$L_2$方法，然后对该方法进行改进，使之生成距离分类边界更近的对抗性样本。
+
+2）使用DCGAN生成器私有化近边界数据后，设计了新的损失函数微调源模型，这使得私有近边界数据同样非常靠接模型分类边界。
+
+3）被盗模型在从源模型派生的过程中，涉及到模型的修改，这些修改操作虽然不会使近边界数据在这些模型上失去近边界性，但是会使它们稍微偏离模型分类边界。
+
 
 近边界数据在所有被盗模型中变现出近边界性说明近边界性是可以跟随源模型一起转移的，这跟DNN分类器有很大的关系。对抗性样本一般位于分类边界上，可以反应分类边界，并且这类特殊的样本具有可转移性，近边界数据是利用对抗性样本构造的，同样具有这种特性。这是本文提出方法的重要基础，因为我们就是要利用所有者的私有近边界数据和可疑队友提供的近边界数据到分类边界的距离来推断模型所有权（距离近者获得所有权），如果私有近边界数据不表现出近边界性，那么就会判定失败。
 
@@ -225,128 +170,51 @@ FGSM，IGSM，RFGSM和CW-$L_2$到分类边界的距离如表\ref{table:1}所示�
 \section{微调目标分类边界的影响}\label{5.4}
 
 本小节将对\ref{3}\ref{3.3}中使用私有近边界数据微调源模型产生的影响进行测试。我们针对不同数据集训练得到的源模型，使用不同规模的近边界数据以及不同的目标分类边界对源模型进行微调。
-
 \begin{table}[h]
 	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.3}
-	\caption{CIFAR-10上不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
+	%	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.2}
+	\caption{微调分类边界对准确率的影响}
 	\label{table:3}
-	\begin{tabular*}{14cm}{@{\extracolsep{\fill}} l l c c}
-		
+	\resizebox{\linewidth}{!}{
+	\begin{tabular}{l c c c c}
 		\hline
-		数据集 \ (准确率)   &   分类边界   &  数据数量  &   微调后准确率    \\
+		\multirow{3}{5em}{分类边界}&\multirow{3}{5em}{数据大小} & CIFAR-10&Heritage&Intel\_image \\ 
+		& & 准确率(0.886)&准确率(0.879)&准确率(0.854) \\
+		\cline{3-5}	
+		& &准确率&准确率&准确率 \\
 		\hline
-		\multirow{20}{8em}{CIFAR-10\ (0.886)}         &\multirow{4}{6em}{分类边界1}&  64   & 0.873    \\
-		&                           &  128  & 0.862     \\
-		&                           &  256  & 0.862     \\
-		&                           &  512  & 0.856     \\
-		\cline{2-4}						   
-		&\multirow{4}{6em}{分类边界2} &  64  & 0.871    \\
-		&                            &  128 & 0.870     \\
-		&                            &  256 & 0.860     \\
-		&                            &  512 & 0.859     \\
-		
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界3} & 64   & 0.871    \\
-		&                            &  128 & 0.868     \\
-		&                            &  256 & 0.858     \\
-		&                            &  512 & 0.855     \\
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界4} & 64   & 0.873     \\
-		&                            &  128 & 0.873     \\
-		&                            &  256 & 0.866     \\
-		&                            &  512 & 0.862     \\
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界5} & 64  & 0.876    \\
-		&                            & 128 & 0.866     \\
-		&                            & 256 & 0.868     \\
-		&                            & 512 & 0.861     \\
-		\hline	
-	\end{tabular*}
+		\multirow{4}{5em}{分类边界1}&64&0.873&0.862&0.825 \\
+		&128&0.862&0.858&0.829 \\
+		&256&0.862&0.854&0.826 \\
+		&512&0.856&0.848&0.839 \\
+		\hline
+		\multirow{4}{5em}{分类边界2}&64&0.871&0.867&0.843 \\
+		&128&0.870&0.862&0.839 \\
+		&256&0.860&0.859&0.828 \\
+		&512&0.859&0.851&0.824 \\
+		\hline
+		\multirow{4}{5em}{分类边界3}&64&0.871&0.865&0.841 \\
+		&128&0.868&0.857&0.833 \\
+		&256&0.858&0.855&0.831 \\
+		&512&0.855&0.851&0.823 \\
+		\hline
+		\multirow{4}{5em}{分类边界4}&64&0.873&0.863&0.847 \\
+		&128&0.873&0.860&0.843 \\
+		&256&0.866&0.854&0.838 \\
+		&512&0.862&0.849&0.831 \\
+		\hline
+		\multirow{4}{5em}{分类边界5}&64&0.876&0.866&0.846 \\
+		&128&0.866&0.861&0.834 \\
+		&256&0.868&0.857&0.829 \\
+		&512&0.861&0.853&0.825 \\
+		\hline
+\end{tabular}
+}
 \end{table}
 
-\begin{table}[h]
-	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.3}
-	\caption{Heritage上不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
-	\label{table:4}
-	\begin{tabular*}{14cm}{@{\extracolsep{\fill}} l l c c}
-		
-		\hline
-		数据集 \ (准确率)   &   分类边界   &  数据数量  &   微调后准确率    \\
-		\hline
-		\multirow{20}{8em}{Heritage\ (0.879)}         &\multirow{4}{6em}{分类边界1}&  64   & 0.862    \\
-		&                           &  128  & 0.858     \\
-		&                           &  256  & 0.854     \\
-		&                           &  512  & 0.848     \\
-		\cline{2-4}						   
-		&\multirow{4}{6em}{分类边界2} &  64  & 0.867 \\
-		&                            &  128 & 0.862     \\
-		&                            &  256 & 0.859     \\
-		&                            &  512 & 0.851     \\
-		
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界3} & 64   & 0.865  \\
-		&                            &  128 & 0.857     \\
-		&                            &  256 & 0.855     \\
-		&                            &  512 & 0.851     \\
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界4} & 64   & 0.863  \\
-		&                            &  128 & 0.860     \\
-		&                            &  256 & 0.854     \\
-		&                            &  512 & 0.849     \\
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界5} & 64  & 0.866  \\
-		&                            & 128 & 0.861     \\
-		&                            & 256 & 0.857     \\
-		&                            & 512 & 0.853     \\
-		\hline	
-	\end{tabular*}
-\end{table}
-
-\begin{table}[h]
-	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.3}
-	\caption{Intel\_image上不同对抗性样本生成算法生成的数据与目标分类边界的平均距离}
-	\label{table:5}
-	\begin{tabular*}{14cm}{@{\extracolsep{\fill}} l l c c}
-		
-		\hline
-		数据集 \ (准确率)   &   分类边界   &  数据数量  &   微调后准确率    \\
-		\hline
-		\multirow{20}{8em}{Intel\_image\ (0.854)}    &\multirow{4}{6em}{分类边界1}&  64   & 0.825    \\
-		&                           &  128  & 0.829     \\
-		&                           &  256  & 0.826     \\
-		&                           &  512  & 0.839     \\
-		\cline{2-4}						   
-		&\multirow{4}{6em}{分类边界2} &  64  & 0.843 \\
-		&                            &  128 & 0.839     \\
-		&                            &  256 & 0.828     \\
-		&                            &  512 & 0.824     \\
-		
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界3} &  64  & 0.841  \\
-		&                            &  128 & 0.833     \\
-		&                            &  256 & 0.831     \\
-		&                            &  512 & 0.823     \\
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界4} & 64   & 0.847  \\
-		&                            &  128 & 0.843     \\
-		&                            &  256 & 0.838     \\
-		&                            &  512 & 0.831     \\
-		\cline{2-4}						       
-		&\multirow{4}{6em}{分类边界5} & 64  & 0.846  \\
-		&                            & 128 & 0.834     \\
-		&                            & 256 & 0.829     \\
-		&                            & 512 & 0.825     \\
-		\hline	
-	\end{tabular*}
-\end{table}
 	
-如表\ref{table:3}，表\ref{table:4}，表\ref{table:5}所示，随着微调模型近边界数量的增多，模型准确率逐渐下降，但是在几乎全部情况下，源模型微调前后的精度差没有超过3\%，这是本文方法可以接受的范围。因为私有近边界数据本身不是原始数据集的一部分，所以使用规模变大时，对源模型的影响也会变大。但是在另一个角度，微调源模型的目的是使得我们的私有近边界数据更加靠近分类边界，来提高后续推断模型所有权的置信度，所以，使用更多的近边界数据微调源模型效果会更好。因此，在实际情况中，微调数据规模的选择是一个模型精度和推断置信度的折衷。
+如表\ref{table:3}所示，随着微调模型近边界数量的增多，模型准确率逐渐下降，但是在几乎全部情况下，源模型微调前后的精度差没有超过3\%，这是本文方法可以接受的范围。因为私有近边界数据本身不是原始数据集的一部分，所以使用规模变大时，对源模型的影响也会变大。但是在另一个角度，微调源模型的目的是使得我们的私有近边界数据更加靠近分类边界，来提高后续推断模型所有权的置信度，所以，使用更多的近边界数据微调源模型效果会更好。因此，在实际情况中，微调数据规模的选择是一个模型精度和推断置信度的折衷。
 
 表中整体情况下，模型的准确率都下降不多。一方面，这是因为本身微调的数据和源模型的训练数据相比只是一小部分，不会对模型产生太大的影响。另一方面，在微调源模型时，我们将学习率设置为0.0001，这是很低的。并且使用原始数据对模型进行交替训练，训练轮次不超过10次。所以微调之后，模型准确率没有受到很大的影响。
 
@@ -357,10 +225,10 @@ FGSM，IGSM，RFGSM和CW-$L_2$到分类边界的距离如表\ref{table:1}所示�
 
 本文提出的方法目的是推断模型所有权，本节将对此方法的有效性进行测试。根据本文提出方法的流程，模型所有者和可疑对手均需要提供各自的近边界数据，然后输入模型获得输出，再根据\ref{4.2.3}中提到的假设检验进行结果比对，判断可疑模型是否从源模型派生。
 
-\begin{table}[H]
+\begin{table}[h]
 	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.8}
+%	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.5}
 	\caption{推断模型所有权}
 	\label{table:2}
 	\resizebox{\linewidth}{!}{
@@ -407,128 +275,38 @@ FGSM，IGSM，RFGSM和CW-$L_2$到分类边界的距离如表\ref{table:1}所示�
 
 在本节中，我们将测试不同规模的近边界数据在推断模型所有权上的可伸缩性。我们的方法需要对数据进行采样从而进行假设检验，通常来说样本数量越大，对检验过程中因随机因素而产生的不利影响就会越小，更能准确的推断模型所有权。
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 	\centering
-	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-2-p-value.png}} 
-	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-3-p-value.png}} 
-	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{CIFAR-10-4-7-p-value.png}} 
-	\caption{CIFAR-10上推断模型所有权的扩展性}
+	\subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-4-2-p-value.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-4-3-p-value.pdf}}
+	\subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-4-7-p-value.pdf}}
+	\subfigure{\includegraphics[width=0.49\linewidth]{CIFAR-10-5-6-p-value.pdf}} 
+	\caption{CIFAR-10上4个不同分类边界下的扩展}
 	\label{CIFAR-10上推断模型所有权的扩展性}
-	\setlength{\abovecaptionskip}{7mm}
-\end{figure*}
+%	\setlength{\abovecaptionskip}{7mm}
+\end{figure}
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 	\centering
-	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Heritage-3-0-p-value.png}} 
-	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Heritage-3-1-p-value.png}} 
-	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Heritage-3-4-p-value.png}} 
-	\caption{Heritage上推断模型所有权的扩展性}
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-3-0-p-value.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-3-1-p-value.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-3-4-p-value.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Heritage-7-6-p-value.pdf}} 
+	\caption{Heritage上4个不同分类边界下的扩展}
 	\label{Heritage上推断模型所有权的扩展性}
-	\setlength{\abovecaptionskip}{7mm}
-\end{figure*}
+%	\setlength{\abovecaptionskip}{7mm}
+\end{figure}
 
-\begin{figure*}[!htb]
+\begin{figure}[!htb]
 	\centering
-	\subfigure[分类边界1]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-1-p-value.png}} 
-	\subfigure[分类边界2]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-4-p-value.png}} 
-	\subfigure[分类边界3]{\includegraphics[width=0.325\textwidth]{Intel\_image-3-5-p-value.png}} 
-	\caption{Intel\_image上推断模型所有权的扩展性}
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-3-1-p-value.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-3-4-p-value.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-3-5-p-value.pdf}} 
+	\subfigure{\includegraphics[width=0.49\linewidth]{Intel\_image-5-0-p-value.pdf}} 
+	\caption{Intel\_image上4个不同分类边界下的扩展}
 	\label{Intel-image上推断模型所有权的扩展性}
-	\setlength{\abovecaptionskip}{7mm}
-\end{figure*}
-
-%\begin{figure}[htbp]%%图,[htbp]是浮动格式
-%	\centering
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-2-p-value.png}
-%		\centerline{(a)分类边界1}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-3-p-value.png}
-%		\centerline{(b)分类边界2}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-4-7-p-value.png}
-%		\centerline{(c)分类边界3}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{CIFAR-10-5-6-p-value.png}
-%		\centerline{(d)分类边界4}
-%	\end{minipage}
-%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-%\caption{CIFAR-10上推断模型所有权的扩展性}
-%\label{CIFAR-10上推断模型所有权的扩展性}
-%\end {figure}
-%	
-%\begin{figure}[htbp]%%图,[htbp]是浮动格式
-%	\centering
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-3-0-p-value.png}
-%		\centerline{(a)分类边界1}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-3-1-p-value.png}
-%		\centerline{(b)分类边界2}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-3-4-p-value.png}
-%		\centerline{(c)分类边界3}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Heritage-7-6-p-value.png}
-%		\centerline{(d)分类边界4}
-%	\end{minipage}
-%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-%\caption{Heritage上推断模型所有权的扩展性}
-%\label{Heritage上推断模型所有权的扩展性}
-%\end {figure}
-%		
-%\begin{figure}[htbp]%%图,[htbp]是浮动格式
-%	\centering
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-1-p-value.png}
-%		\centerline{(a)分类边界1}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-4-p-value.png}
-%		\centerline{(b)分类边界2}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-3-5-p-value.png}
-%		\centerline{(c)分类边界3}
-%	\end{minipage}
-%	\begin{minipage}[htbp]{0.49\linewidth}        %图片占用一行宽度的50%
-%		\hspace{2mm}
-%		\centering
-%		\includegraphics[width=7cm,height=4cm]{Intel\_image-5-0-p-value.png}
-%		\centerline{(d)分类边界4}
-%	\end{minipage}
-%\setlength{\abovecaptionskip}{7mm} %图片标题与图片距离
-%\caption{Intel\_image上推断模型所有权的扩展性}
-%\label{Intel-image上推断模型所有权的扩展性}
-%\end {figure}
+%	\setlength{\abovecaptionskip}{7mm}
+\end{figure}
 
 如图\ref{CIFAR-10上推断模型所有权的扩展性}，图\ref{Heritage上推断模型所有权的扩展性}，图\ref{Intel-image上推断模型所有权的扩展性}所示，$p$值在不同数据集，不同分类边界上，随着近边界数据规模的增大而减小，而$p$值越小说明假设检验能够以更高的置信度确定可疑模型是被盗模型。
 

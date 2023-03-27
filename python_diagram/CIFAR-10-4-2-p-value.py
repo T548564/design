@@ -29,8 +29,9 @@ plt.plot(x, y4, '^-', color='#43A047', alpha=1, linewidth=1, label='剪枝30%')
 plt.plot(x, y5, 'v-', color='#FFC107', alpha=1, linewidth=1, label='剪枝50%')
 plt.plot(x, y6, 'x-', color='tan', alpha=1, linewidth=1, label='知识蒸馏')
 
-plt.legend(loc="upper right")
-plt.xlabel('近边界数据规模')
-plt.ylabel('log(p值)')
-plt.savefig('../yzw/image/CIFAR-10-4-2-p-value.png', dpi=300)
+plt.legend(loc="upper right", fontsize=16)
+plt.xlabel('近边界数据规模', fontsize = 20)
+plt.ylabel('log(p值)', fontsize = 20)
+plt.tick_params(labelsize=16)  #刻度字体大小13
+# plt.savefig('../yzw/image/CIFAR-10-4-2-p-value.png', dpi=600)
 plt.show()

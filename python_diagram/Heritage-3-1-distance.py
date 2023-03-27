@@ -48,8 +48,9 @@ plt.plot(x, y5, 'v-', color='#FFC107', alpha=1, linewidth=1, label='剪枝50%')
 plt.plot(x, y6, '*-', color='#424242', alpha=1, linewidth=1, label='知识蒸馏')
 plt.plot(x, y7, 'x-', color='#9575CD', alpha=1, linewidth=1, label='无关模型')
 # 显示标签，如果不加这句，即使在plot中加了label='一些数字'的参数，最终还是不会显示标签
-plt.legend(loc="upper left")
-plt.xlabel('近边界数据数量')
-plt.ylabel('距离分类边界距离')
-plt.savefig('../yzw/image/Heritage-3-1-distance.png', dpi = 300)
+plt.legend(loc="upper left", fontsize=16)
+plt.xlabel('近边界数据数量', fontsize = 20)
+plt.ylabel('距离分类边界距离', fontsize = 20)
+plt.tick_params(labelsize=16)  #刻度字体大小13
+# plt.savefig('../yzw/image/Heritage-3-1-distance.png', dpi =600)
 plt.show()

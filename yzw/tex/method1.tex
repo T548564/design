@@ -33,13 +33,16 @@ DNN分类器的主要目标是对输入数据样本进行分类，因此，一�
 
 \begin{figure}[htbp]%%图,[htbp]是浮动格式
 	\centering
-	\includegraphics[width=12cm,height=8cm]{近边界数据示意图.pdf}
 	\setlength{\abovecaptionskip}{5mm} %图片标题与图片距离
+	\vspace{-2mm}
+	\setlength{\belowcaptionskip}{-3mm} %调整图片标题与下文距离
+	\includegraphics[width=0.9\linewidth]{近边界数据示意图.pdf}
 	\caption{近边界数据示意图}
 	\label{近边界数据示意图}
-	\end{figure}
-	
-相较于其他不相关的模型，对抗抗性样本可以更好的从源模型转移到其派生出的模型上。与对抗性样本类似，近边界数据也可以随着源模型转移，也就是说数据的近边界特性在派生模型上得到保留，详细的测试结果在\ref{5}\ref{5.2}中。在下一节中，我们将讨论如何生成所需的近边界对抗性样本。
+	%	\vspace{-3mm}  %调整图片标题与下文距离，与\setlength{\belowcaptionskip}{-3mm}等效。
+	\end {figure}
+		
+相较于其他不相关的模型，对抗抗性样本可以更好的从源模型转移到其派生出的模型上。与对抗性样本类似，近边界数据也可以随着源模型转移，也就是说数据的近边界特性在派生模型上得到保留，详细的测试结果在\ref{5}\ref{5.3}中。在下一节中，我们将讨论如何生成所需的近边界对抗性样本。
 
 \section{生成近边界对抗性样本}\label{3.2}
 
@@ -50,19 +53,19 @@ DNN分类器的主要目标是对输入数据样本进行分类，因此，一�
 如图\ref{原始样本与对抗性样本对比}所示，对抗性样本对分类边界的跨越体现在，在视觉上，对抗性样本和原始样本几乎没有差别，但是分类结果却完全不同，在有目标攻击的情况下，甚至可以人为的指定目标分类。如在图\ref{原始样本与对抗性样本对比}中，原始样本的类别为石柱，对抗性样本却被分类器识别为高塔。
 
 \begin{figure}[htbp]%%图,[htbp]是浮动格式
-	\begin{minipage}[t]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
+	\setlength{\abovecaptionskip}{5mm} %图片标题与图片距离
+	\vspace{-2mm}
+	\setlength{\belowcaptionskip}{-3mm} %调整图片标题与下文距离
+	\begin{minipage}[t]{1\linewidth}        %图片占用一行宽度的50%
 		\centering
-		\includegraphics[width=6cm,height=4.5cm]{对抗性样本原图.jpg}
+		\includegraphics[width=1\linewidth]{原始样本.pdf}
 		\centerline{(a)原始样本}
 	\end{minipage}
-	\begin{minipage}[t]{0.49\linewidth}        %图片占用一行宽度的50%
-		\hspace{2mm}
+	\begin{minipage}[t]{1\linewidth}        %图片占用一行宽度的50%
 		\centering
-		\includegraphics[width=6cm,height=4.5cm]{对抗性样本.jpg}
+		\includegraphics[width=1\linewidth]{对抗性样本.pdf}
 		\centerline{(b)对抗性样本}
 	\end{minipage}
-\setlength{\abovecaptionskip}{5mm} %图片标题与图片距离
 \caption{原始样本与对抗性样本的对比}
 \label{原始样本与对抗性样本对比}
 \end {figure}
@@ -82,10 +85,11 @@ DNN分类器的主要目标是对输入数据样本进行分类，因此，一�
 \noindent\textbf{Fast \ Gradient \ Sign \ Method(FGSM):}FGSM \cite{goodfellow2014explaining}是最经典的生成对抗性样本的方法之一，它是一种基于梯度构建对抗性样本的方法，属于无目标的攻击方式。只需要对原始样本添加一次微小的扰动$\eta$，如式\ref{eq:3.1}，\ref{eq:3.2}所示，即可生成样本$x$的对抗性样本$\tilde{x}$，十分高效。
 
 \begin{equation}
+	 	\setlength\abovedisplayshortskip{-5mm}
+%	 	\setlength\belowdisplayshortskip{4mm}
 	\label{eq:3.1}
 	\eta = \epsilon \cdot sign(\bigtriangledown_xJ(\theta,x,y^*))
 \end{equation}
-
 \begin{equation}
 	\label{eq:3.2}
 	\tilde{x} = clip(x + \eta)
@@ -98,10 +102,10 @@ FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon
 \noindent\textbf{Iterative \ Gradient \ Sign \ Method(IGSM):}IGSM\cite{kurakin2018adversarial}是FGSM的进阶版本，如式\ref{eq:3.3}，\ref{eq:3.4}所示,与FGSM只进行一次扰动叠加不同，IGSM采用迭代的形式构造对抗性样本，每次叠加一个小扰动。这个过程持续到成功生成对抗性样本或者达到迭代次数上限为止。
 
 \begin{equation}
+	\setlength\abovedisplayshortskip{-5mm}
 	\label{eq:3.3}
 	\eta = \alpha \cdot sign(\bigtriangledown_xJ(\theta,x,y^*))
 \end{equation}
-
 \begin{equation}
 	\label{eq:3.4}
 	\tilde{x}_t = clip(\tilde{x}_{t - 1}  + clip_{\epsilon}(\eta))
@@ -114,21 +118,23 @@ FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon
 \noindent\textbf{Carlini \ and \ Wagner's \ methods(CW):}CW\cite{carlini2017towards}方法是一种有目标的攻击方式，同样是添加噪声到对抗性样本中，但其具有三种变体：CW-$L_0$，CW-$L_2$和CW-$L_{\infty}$，不同的变体使用不同的方法来衡量噪声的大小，其中CW-$L_2$在实验中生成对抗性样本的效果和生成效率相比其余两种变体较好，因此本文使用该方法作为生成对抗性样本的选择。具体而言，CW-$L_2$对于给定的初始样本，采用二分查找的方式来增大或减小式\ref{eq:3.7}中$c$，并且使用类似训练神经网络模型的方式来调整生成对抗性样本的其他参数。CW-$L_2$的损失函数和约束如式\ref{eq:3.5}，\ref{eq:3.6}，\ref{eq:3.7}，\ref{eq:3.8}所示：
 
 \begin{equation}
+%	\setlength\abovedisplayshortskip{-8mm}
 	\label{eq:3.5}
 	Loss = Loss1 + Loss2 
 \end{equation}
-
 \begin{equation}
+%	\setlength\abovedisplayshortskip{-8mm}
 	\label{eq:3.6}
 	Loss1 = D(x, x + \delta)
 \end{equation}
-
 \begin{equation}
+%	\setlength\abovedisplayshortskip{-5mm}
 	\label{eq:3.7}
 	Loss2 = c \cdot f(x + \delta,target)
 \end{equation}
-
 \begin{equation}
+%	\setlength\abovedisplayshortskip{-5mm}
+%	\setlength\belowdisplayshortskip{-3mm}
 	\label{eq:3.8}
 	x + \delta \in [0,1]^m
 \end{equation}
@@ -138,7 +144,7 @@ FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon
 根据定义\ref{def:3}，数据样本$x$距离分类边界的距离是$distance = \vert g_i(x) - g_j(x) \vert$，本节的目标是生成的对抗性样本距离分类边界的距离尽可能近。我们在算法迭代过程中引入这一目标，以此改进算法迭代的过程，在使得生成对抗性样本更加靠近分类边界的同时，提高算法效率。具体而言，在迭代过程中，我们仅在$distance$变小时，更新距离参数和新生成的对抗性样本，并在$distance$小于等于预定的阈值$\theta$时，提前终止算法的迭代，具体的过程如算法\ref{alg:1}所示。
 
 \begin{algorithm}[H] 
-	\setstretch{1.3}
+	\setstretch{1.2}
 	\caption{改进的二分查找CW-$L_2$算法}
 	\label{alg:1}
 	\begin{algorithmic}[1]
@@ -185,27 +191,29 @@ FGSM 生成对抗性样本的速度非常快，但其结果非常依赖$\epsilon
 
 \begin{figure}[htbp]%%图,[htbp]是浮动格式
 	\centering
-	\includegraphics[width=14.5cm,height=9cm]{DCGAN网络结构图.pdf}
-	%	\centerline{原始样本}
 	\setlength{\abovecaptionskip}{5mm} %图片标题与图片距离
+%	\vspace{-2mm}
+	\setlength{\belowcaptionskip}{-3mm} %调整图片标题与下文距离
+	\includegraphics[width=1\linewidth]{DCGAN网络结构图.pdf}
 	\caption{DCGAN网络结构图}
 	\label{DCGAN网络结构图}
-\end {figure}
-
+	%	\vspace{-3mm}  %调整图片标题与下文距离，与\setlength{\belowcaptionskip}{-3mm}等效。
+	\end {figure}
+	
 如图\ref{DCGAN网络结构图}所示，DCGAN的大体结构与训练方式和普通GAN类似，主要变化是DCGAN将原始的GAN与CNN结合到一起，生成器$G$和判定器$D$都用CNN架构替换了原始GAN的全连接网络。得益于CNN对图像的强大处理能力，DCGAN极大提升了网络训练稳定性和生成样本的质量。具体而言，DCGAN主要是从网络架构上改进了原始的GAN，主要改进如下：
 
-\begin{enumerate}
-	\renewcommand{\labelenumi}{\theenumi)}
-	\item DCGAN的生成器和判别器均舍弃掉CNN的池化层，生成器使用反卷积层来还原图片，判别器保留CNN的整体架构，使用卷积层来提取图片特征。
-	\item 在生成器和判别器中都使用Batch Normalization层，提升训练DCGAN模型稳定性的同时加速了训练。
-	\item 生成器除最后一层使用Tanh激活函数外，其余层使用ReLU，判别器所有层均使用LeakyReLU，使模型可以更快的学习。
-	\item 使用Adam优化器并调整了超参数，将学习率设置为0.0002，可以更好的学习到数据样本的特征。
-\end{enumerate}
+1）DCGAN的生成器和判别器均舍弃掉CNN的池化层，生成器使用反卷积层来还原图片，判别器保留CNN的整体架构，使用卷积层来提取图片特征。
+
+2）在生成器和判别器中都使用Batch Normalization层，提升训练DCGAN模型稳定性的同时加速了训练。
+
+3）生成器除最后一层使用Tanh激活函数外，其余层使用ReLU，判别器所有层均使用LeakyReLU，使模型可以更快的学习。
+
+4）使用Adam优化器并调整了超参数，将学习率设置为0.0002，可以更好的学习到数据样本的特征。
 
 我们希望DCGAN能够学习到尽可能多的近边界数据特征，以便更好的生成近边界数据。训练过程中，尝试修改DCGAN判定器的目标函数，在保留梯度的情况下，将其与源模型的结果相连，即使用源模型和判别器共同判定是生成数据还是原始数据。这种方式得到的训练结果在同样的生成规模下略微优于原始DCGAN生成的数据。然而，考虑到两者的效率，实际情况下生成的结果并无较大区别，所以本文采用原始的训练方式。训练DCGAN的具体流程如算法\ref{alg:2}所示。
 
 \begin{algorithm}[!h] 
-	\setstretch{1.3}
+	\setstretch{1.2}
 	\caption{训练DCGAN模型}
 	\label{alg:2}
 	\begin{algorithmic}[1]
@@ -232,7 +240,8 @@ DCGAN对图像数据有着很强的特征提取能力，生成器能够很好的
 因此，为了解决上述问题，本文提出使用近边界数据微调源模型的目标分类边界，使生成的私有近边界数据更加靠近DNN模型分类边界。如式\ref{eq:3.4}所示，$Loss_{FT}$是针对目标分类边界的损失函数。
 
 \begin{equation}
-	\label{eq:3.10}
+%	\setlength\abovedisplayshortskip{-3mm}
+	\label{eq:3.9}
 	Loss_{FT} = \frac{1}{n} \sum^{n}_{i = 1} (g_t(x_i') - g_s(x_i'))^2
 \end{equation}
 
@@ -241,7 +250,7 @@ DCGAN对图像数据有着很强的特征提取能力，生成器能够很好的
 $Loss_{FT}$本质是希望近边界数据更靠近目标分类边界，但是为了尽可能减小对原始模型精度的影响，不能直接使用该损失函数对源模型进行微调。受DCGAN训练过程的启发，我们使用源模型的损失函数$Loss_{FM}$与$Loss_{FT}$两者交替训练微调源模型，并将学习率设置为0.0001，在保持源模型精度的同时，使生成的数据样本更加靠近目标分类边界。与DCGAN 的过程相似，这是一个博弈的过程，微调的具体流程如算法\ref{alg:3}所示。
 
 \begin{algorithm}[H] 
-	\setstretch{1.3}
+	\setstretch{1.2}
 	\caption{微调源模型}
 	\label{alg:3}
 	\begin{algorithmic}[1]
@@ -263,8 +272,8 @@ $Loss_{FT}$本质是希望近边界数据更靠近目标分类边界，但是为
 
 \begin{table}[h]
 	\centering
-	\setlength{\arrayrulewidth}{0.5mm}
-	\renewcommand\arraystretch{1.8}
+%	\setlength{\arrayrulewidth}{0.5mm}
+	\renewcommand\arraystretch{1.2}
 	\caption{微调分类边界对模型的影响}
 	\label{table:state}
 	\begin{tabular*}{13cm}{@{\extracolsep{\fill}} l c c}
