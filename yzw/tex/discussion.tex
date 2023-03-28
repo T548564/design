@@ -3,7 +3,7 @@
 
 \chapter{基于近边界数据的模型所有权推断方法分析}\label{5}
 
-本文选择在开源数据集CIFAR-10\cite{krizhevsky2009learning}，Heritage\cite{Heritage}，Intel\_image\cite{Intel_image}上进行实验，并选择ResNet18作为评估的源模型，VGG11作为对照的无关模型。本章将从生成初始近边界数据的方法选择，数据近边界特性评估，微调目标分类边界的影响，推断模型所有权的有效性和不同规模近边界数据的可伸缩性扩展这几个方面对本文提出的方法进行测评和分析。
+本文选择在三个开源数据集上进行实验，并选择ResNet18作为评估的源模型，VGG11作为对照的无关模型。本章将从生成初始近边界数据的方法选择，数据近边界特性评估，微调目标分类边界的影响，推断模型所有权的有效性和不同规模近边界数据的可伸缩性扩展这几个方面对本文提出的方法进行测评和分析。
 
 \noindent\textbf{被盗模型：}本文设置了几种常见的模型盗窃方法，包括模型微调，模型剪枝（不同的剪枝率）和模型知识蒸馏，并在源模型的基础上派生得到被盗模型。
 
@@ -11,11 +11,11 @@
 
 \subsection{数据集}
 
-\noindent\textbf{CIFAR-10：}CIFAR-10共有10个类别，其中训练集包含50000张大小为32x32的图像，测试集包含10000张大小为32x32的图像。
+\noindent\textbf{CIFAR-10\cite{krizhevsky2009learning}：}CIFAR-10共有10个类别，其中训练集包含50000张大小为32x32的图像，测试集包含10000张大小为32x32的图像。
 
-\noindent\textbf{Heritage：}Heritage共有10个类别，其中训练集包含10235张大小为128x128的图像，测试集包含1404张大小为64x64的图像。
+\noindent\textbf{Heritage\footnote{https://datahub.io/dataset/architectural-heritage-elements-image-dataset}：}Heritage共有10个类别，其中训练集包含10235张大小为128x128的图像，测试集包含1404张大小为64x64的图像。
 
-\noindent\textbf{Intel\_image：}Intel\_image共有6个类别，其中训练集包含14034张大小为150x150的图像，测试集包含3001张大小为150x150的图像。
+\noindent\textbf{Intel\_image\footnote{https://www.kaggle.com/datasets/puneet6060/intel-image-classification}：}Intel\_image共有6个类别，其中训练集包含14034张大小为150x150的图像，测试集包含3001张大小为150x150的图像。
 
 \subsection{目标模型}
 
@@ -179,7 +179,7 @@ FGSM，IGSM，RFGSM和CW-$L_2$到分类边界的距离如表\ref{table:1}所示�
 	\resizebox{\linewidth}{!}{
 	\begin{tabular}{l c c c c}
 		\hline
-		\multirow{3}{5em}{分类边界}&\multirow{3}{5em}{数据大小} & CIFAR-10&Heritage&Intel\_image \\ 
+		\multirow{3}{5em}{分类边界}&\multirow{3}{5em}{数据规模} & CIFAR-10&Heritage&Intel\_image \\ 
 		& & 准确率(0.886)&准确率(0.879)&准确率(0.854) \\
 		\cline{3-5}	
 		& &准确率&准确率&准确率 \\
@@ -263,7 +263,7 @@ FGSM，IGSM，RFGSM和CW-$L_2$到分类边界的距离如表\ref{table:1}所示�
 }
 \end{table}
 
-在本节中，我们讨论本文方法生成的私有近边界数据与其他近边界数据在盗窃模型上的性能对比。首先，我们模拟了盗窃者可能会提供的近边界数据，该数据由两部分组成，包括(1)从原始数据中挑选出的近边界数据，(2)由FGSM和CW生成的一些对抗性样本。然后针对不同的目标分类边界，进行假设检验并计算在不同数据集和不同盗窃模型上的$\Delta\mu$和$p$值。
+在本节中，我们讨论本文方法生成的私有近边界数据与其他近边界数据在盗窃模型上的性能对比。首先，我们模拟了盗窃者可能会提供的近边界数据，该数据由两部分组成，包括（1）从原始数据中挑选出的近边界数据，（2）由FGSM和CW生成的一些对抗性样本。然后针对不同的目标分类边界，进行假设检验并计算在不同数据集和不同盗窃模型上的$\Delta\mu$和$p$值。
 
 如表\ref{table:2}所示，$p$值在每个数据集，每条分类边界上呈从上到下增大的趋势，$\Delta\mu$呈减小趋势，在全部情况中，$p$值均低于0.05。
 也就是说，本文的方法在不同的盗窃方法中推断模型的所有权均有显著的效果，我们至少有95\%以上的置信度确定可疑模型是盗窃模型。

@@ -9,10 +9,10 @@ DNN分类器可以由其分类边界唯一的表示，本章将讨论DNN模型�
 
 DNN分类器的主要目标是对输入数据样本进行分类，因此，一个DNN分类器的特征通常由其决策模式和分类边界决定。分类器的分类边界是一个抽象的概念，我们无法直接描述它，但可以根据分类器的决策结果来间接的反应分类边界。下面给出分类器分类边界的定义：
 
-\begin{myDef}
+\begin{Definition}[分类边界]
 	\label{def:1}
-	\pmb{分类边界}。给定一个数据样本$x$，如果数据样本$x$满足$g_i(x) = g_j(x)$，其中$i \neq j $并且$min(g_i(x), g_j(x)) > \mathop{max} \limits_{k \neq i, j}g_k(x)$，$g_k(x)$代表数据样本$x$被决策为类别$k$的概率，那么称数据样本$x$位于类别$i$和$j$的分类边界上。
-\end{myDef}
+	给定一个数据样本$x$，如果数据样本$x$满足$g_i(x) = g_j(x)$，其中$i \neq j $并且$min(g_i(x), g_j(x)) > \mathop{max} \limits_{k \neq i, j}g_k(x)$，$g_k(x)$代表数据样本$x$被决策为类别$k$的概率，那么称数据样本$x$位于类别$i$和$j$的分类边界上。
+\end{Definition}
 
 注意，分类边界是DNN分类器的特征，是客观存在的，和我们是否能直接找到这样的数据点并不相关。因此，如何有效的获取分类边界或其附近的数据样本点，是本文方法要解决的问题之一。
 
@@ -22,10 +22,10 @@ DNN分类器的主要目标是对输入数据样本进行分类，因此，一�
 
 为了解决这个问题，与分类边界的思想类似，本文提出了一个鲁棒性更强的近边界数据概念。下面给出本文近边界数据的定义：
 
-\begin{myDef}
+\begin{Definition}[近边界数据]
 	\label{def:2}
-	\pmb{近边界数据}。给定一个数据样本$x$，一个阈值$\theta$,如果数据样本$x$满足$\vert g_i(x) - g_j(x) \vert \leq \theta$，其中$i \neq j $并且$min(g_i(x), g_j(x)) \geq \mathop{max} \limits_{k \neq i, j}g_k(x)$，$g_k(x)$代表数据样本$x$被决策为类别$k$的概率，则数据样本$x$被称为近边界数据。
-\end{myDef}
+	给定一个数据样本$x$，一个阈值$\theta$,如果数据样本$x$满足$\vert g_i(x) - g_j(x) \vert \leq \theta$，其中$i \neq j $并且$min(g_i(x), g_j(x)) \geq \mathop{max} \limits_{k \neq i, j}g_k(x)$，$g_k(x)$代表数据样本$x$被决策为类别$k$的概率，则数据样本$x$被称为近边界数据。
+\end{Definition}
 
 近边界数据是指那些非常接近分类边界的数据样本，与位于分类边界上的数据样本类似，这些样本对模型的决策边界有重要的影响，因为它们能够揭示模型在边界附近的行为。由于近边界数据不要求样本完全位于分类边界上，因此即使模型分类边界发生偏移，仍然可以衡量数据近边界性。所以相对于直接使用分类边界来作为模型指纹，近边界数据在面对模型窃取攻击时有着更强的鲁棒性。
 
@@ -53,19 +53,11 @@ DNN分类器的主要目标是对输入数据样本进行分类，因此，一�
 如图\ref{原始样本与对抗性样本对比}所示，对抗性样本对分类边界的跨越体现在，在视觉上，对抗性样本和原始样本几乎没有差别，但是分类结果却完全不同，在有目标攻击的情况下，甚至可以人为的指定目标分类。如在图\ref{原始样本与对抗性样本对比}中，原始样本的类别为石柱，对抗性样本却被分类器识别为高塔。
 
 \begin{figure}[htbp]%%图,[htbp]是浮动格式
-	\setlength{\abovecaptionskip}{5mm} %图片标题与图片距离
+	\setlength{\abovecaptionskip}{3mm} %图片标题与图片距离
 	\vspace{-2mm}
 	\setlength{\belowcaptionskip}{-3mm} %调整图片标题与下文距离
-	\begin{minipage}[t]{1\linewidth}        %图片占用一行宽度的50%
-		\centering
-		\includegraphics[width=1\linewidth]{原始样本.pdf}
-		\centerline{(a)原始样本}
-	\end{minipage}
-	\begin{minipage}[t]{1\linewidth}        %图片占用一行宽度的50%
-		\centering
-		\includegraphics[width=1\linewidth]{对抗性样本.pdf}
-		\centerline{(b)对抗性样本}
-	\end{minipage}
+	\subfigure[原始样本]{\includegraphics[width=1\linewidth]{原始样本.pdf}}
+	\subfigure[对抗性样本]{\includegraphics[width=1\linewidth]{对抗性样本.pdf}}
 \caption{原始样本与对抗性样本的对比}
 \label{原始样本与对抗性样本对比}
 \end {figure}
@@ -74,10 +66,10 @@ DNN分类器的主要目标是对输入数据样本进行分类，因此，一�
 
 为了更好的衡量数据样本到分类边界的距离，在定义\ref{def:2}的基础上，下面给出量化的分类边界距离定义：
 
-\begin{myDef}
+\begin{Definition}[分类边界距离]
 	\label{def:3}
-	\pmb{分类边界距离}。给定一个数据样本$x$，它到分类边界的距离$distance = \vert g_i(x) - g_j(x) \vert$，其中$i \neq j $并且$min(g_i(x), g_j(x)) \geq \mathop{max} \limits_{k \neq i, j}g_k(x)$，$g_k(x)$代表数据样本$x$被决策为类别$k$的概率。
-\end{myDef}
+	给定一个数据样本$x$，它到分类边界的距离$distance = \vert g_i(x) - g_j(x) \vert$，其中$i \neq j $并且$min(g_i(x), g_j(x)) \geq \mathop{max} \limits_{k \neq i, j}g_k(x)$，$g_k(x)$代表数据样本$x$被决策为类别$k$的概率。
+\end{Definition}
 
 根据定义\ref{def:3}，以分类边界距离为衡量标准，下面分别对几种常见的生成对抗性样本的方法进行介绍与测试。
 
