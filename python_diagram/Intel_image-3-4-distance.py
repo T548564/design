@@ -3,7 +3,7 @@ import pandas as pd
 from matplotlib.ticker import MultipleLocator
 
 plt.rcParams['axes.unicode_minus'] = False
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 添加这条可以让图形显示中文
+plt.rcParams['font.sans-serif'] = ['SimSun']  # 添加这条可以让图形显示中文
 # plt.figure(figsize=(10, 10), dpi=300)
 
 df1 = pd.read_csv('./csv/Intel_images/3_4/Intel_images_3_4_64_source.csv')
@@ -49,8 +49,8 @@ plt.plot(x, y6, '*-', color='#424242', alpha=1, linewidth=1, label='知识蒸馏
 plt.plot(x, y7, 'x-', color='#9575CD', alpha=1, linewidth=1, label='无关模型')
 # 显示标签，如果不加这句，即使在plot中加了label='一些数字'的参数，最终还是不会显示标签
 plt.legend(loc="upper left", fontsize=16)
-plt.xlabel('近边界数据数量', fontsize = 20)
-plt.ylabel('距离分类边界距离', fontsize = 20)
-plt.tick_params(labelsize=16)  #刻度字体大小13
+plt.xlabel('近边界数据数量', fontsize = 24)
+plt.ylabel('距离分类边界距离', fontsize = 24)
+plt.tick_params(labelsize=20)  #刻度字体大小13
 # plt.savefig('../yzw/image/Intel_image-3-4-distance.png', dpi = 600)
 plt.show()

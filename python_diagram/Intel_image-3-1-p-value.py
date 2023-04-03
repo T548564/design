@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
 plt.rcParams['axes.unicode_minus'] = False
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 添加这条可以让图形显示中文
+plt.rcParams['font.sans-serif'] = ['SimSun']  # 添加这条可以让图形显示中文
 # plt.figure(figsize=(6, 4), dpi=300)
 x = [64, 128, 256, 512, 1024]
 y1 = [-4, -4, -5, -5, -8]
@@ -30,8 +30,8 @@ plt.plot(x, y5, 'v-', color='#FFC107', alpha=1, linewidth=1, label='剪枝50%')
 plt.plot(x, y6, 'x-', color='tan', alpha=1, linewidth=1, label='知识蒸馏')
 
 plt.legend(loc="upper right", fontsize=16)
-plt.xlabel('近边界数据规模', fontsize = 20)
-plt.ylabel('log(p值)', fontsize = 20)
-plt.tick_params(labelsize=16)  #刻度字体大小13
+plt.xlabel('近边界数据规模', fontsize = 24)
+plt.ylabel('log(p值)', fontsize = 24)
+plt.tick_params(labelsize=20)  #刻度字体大小13
 # plt.savefig('../yzw/image/Intel_image-3-1-p-value.png', dpi=600)
 plt.show()

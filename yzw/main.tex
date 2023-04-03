@@ -16,6 +16,11 @@
 
 % 其它包按需添加
 \usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	citecolor=green,
+	linkcolor=black
+}
 \usepackage{bm}
 \usepackage{amsmath}
 %\newtheorem{myDef}{定义}
@@ -27,7 +32,7 @@
 %\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 \usepackage{setspace}
 \usepackage{multirow}
-%\usepackage{subfigure} 
+\usepackage{booktabs}
 \renewcommand{\algorithmicrequire}{\textbf{输入：}}
 \renewcommand{\algorithmicensure}{\textbf{输出：}}
 %\renewcommand{\algorithmcfname}{算法}
@@ -59,7 +64,7 @@
 	% 封面设置
 	论文题目(中文) = 一种基于近边界数据的模型所有权推断方法研究,
 	副标题         = ,
-	论文题目(英文) = Research on Model Ownership Inference Based on Near-boundary Data,
+	论文题目(英文) = Research on Model Ownership Inference Method Based on Near-boundary Data,
 	论文作者       = 杨宗稳,
 	学号           = 2120200439,
 	指导教师       = 蒲凌君副教授,
@@ -115,7 +120,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \include{./tex/references}
 \include{./tex/appendices}
-\include{./tex/acknowledgements}
-\include{./tex/resume}
+%\include{./tex/acknowledgements}
+%\include{./tex/resume}
 
 \end{document}
